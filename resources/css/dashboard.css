@@ -1,0 +1,193 @@
+/* =========================
+   ENCABEZADO DASHBOARD
+========================= */
+
+.dashboard-header{
+
+    margin-bottom: 35px;
+}
+
+.dashboard-header h1{
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    color: #111111;
+
+    margin-bottom: 5px;
+}
+
+.dashboard-header p{
+
+    color: #555555;
+
+    margin-bottom: 4px;
+}
+
+.dashboard-header small{
+
+    color: #888888;
+}
+
+/* =========================
+   TARJETAS KPI
+========================= */
+
+.stats-card{
+
+    border-radius: 12px;
+
+    border: none;
+
+    background: #ffffff;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+
+    transition: 0.25s;
+}
+
+.stats-card:hover{
+
+    transform: translateY(-3px);
+
+    box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+}
+
+.stats-card .card-body{
+
+    padding: 25px;
+}
+
+.stats-title{
+
+    font-size: 14px;
+
+    color: #6b7280;
+
+    margin-bottom: 10px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+}
+
+.stats-number{
+
+    font-size: 42px;
+
+    font-weight: 700;
+
+    color: #111111;
+
+    margin: 0;
+}
+
+/* =========================
+   TARJETAS MODULOS
+========================= */
+
+.dashboard-card{
+
+    border-radius: 12px;
+
+    background: white;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+
+    transition: 0.25s;
+
+    cursor: pointer;
+}
+
+.dashboard-card:hover{
+
+    transform: translateY(-5px);
+
+    box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+}
+
+.dashboard-card .card-body{
+
+    padding: 25px;
+}
+
+.dashboard-card .card-title{
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+    color: #111111;
+}
+
+.dashboard-card .card-text{
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+.dashboard-card i{
+
+    font-size: 32px;
+}
+
+/* =========================
+   TABLA
+========================= */
+
+.table-card{
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    background: white;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.table-card .card-header{
+
+    background: white;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    padding: 18px 24px;
+
+    font-weight: 600;
+}
+
+.table{
+
+    margin-bottom: 0;
+}
+
+.table thead{
+
+    background-color: #f8fafc;
+}
+
+.table th{
+
+    color: #374151;
+
+    font-weight: 600;
+}
+
+.table td{
+
+    vertical-align: middle;
+}
+
+/* =========================
+   ICONOS KPI
+========================= */
+
+.stats-icon{
+
+    font-size: 42px;
+
+    color: #d1d5db;
+}

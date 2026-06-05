@@ -1,0 +1,50 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+/* =========================
+   ESTILOS GENERALES
+========================= */
+
+body{
+
+    margin: 0;
+
+    font-family: 'Segoe UI', Arial, sans-serif;
+
+    background-color: #f1f5f9;
+
+    color: #1e293b;
+}
+
+/* =========================
+   CONTENEDOR PRINCIPAL
+========================= */
+
+.main-container{
+
+    display: flex;
+
+    min-height: calc(100vh - 65px);
+}
+
+/* =========================
+   CONTENIDO
+========================= */
+
+.content{
+
+    flex: 1;
+
+    padding: 25px;
+}
+
+/* =========================
+   CONTENIDO INTERNO
+========================= */
+
+.content-wrapper{
+
+    padding: 25px;
+
+    background: transparent;
+}
