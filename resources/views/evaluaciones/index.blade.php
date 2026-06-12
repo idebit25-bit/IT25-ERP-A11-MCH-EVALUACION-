@@ -233,17 +233,12 @@
                     <tr>
 
                         <th>ID</th>
-
+                        <th>Código</th>
                         <th>Colaborador</th>
-
-                        <th>Puesto</th>
-
-                        <th>Fecha</th>
-
-                        <th>Calificación</th>
-
+                        <th>Correo</th>
+                        <th>Ingreso</th>
+                        <th>Fecha Evaluación</th>
                         <th>Estado</th>
-
                         <th>Acciones</th>
 
                     </tr>
@@ -252,149 +247,61 @@
 
                 <tbody>
 
-                    <tr>
+                    @foreach($evaluations as $evaluation)
 
-                        <td>001</td>
+<tr>
 
-                        <td>Juan Pérez</td>
+    <td>{{ $evaluation->id }}</td>
 
-                        <td>Desarrollador</td>
+    <td>
+        {{ $evaluation->user->employee_code }}
+    </td>
 
-                        <td>28/05/2026</td>
+    <td>
+        {{ $evaluation->user->first_name }}
+        {{ $evaluation->user->paternal_surname }}
+    </td>
 
-                        <td>95</td>
+    <td>
+        {{ $evaluation->user->email }}
+    </td>
 
-                        <td>
-                            <span class="badge bg-success">
-                                Completada
-                            </span>
-                        </td>
+    <td>
+        {{ $evaluation->user->entry_date }}
+    </td>
 
-                        <td>
+    <td>
+        {{ $evaluation->created_at }}
+    </td>
 
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i> Ver
-                            </button>
+    <td>
 
-                            <button class="btn btn-sm btn-outline-warning">
-                                <i class="bi bi-pencil-square"></i> Editar
-                            </button>
+        <span class="badge bg-warning text-dark">
+            Pendiente
+        </span>
 
-                            <button class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i> Eliminar
-                            </button>
+    </td>
 
-                        </td>
+    <td>
 
-                    </tr>
+        <button class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-eye"></i> Ver
+        </button>
 
-                    <tr>
+        <button class="btn btn-sm btn-outline-warning">
+            <i class="bi bi-pencil-square"></i> Editar
+        </button>
 
-                        <td>002</td>
+        <button class="btn btn-sm btn-outline-danger">
+            <i class="bi bi-trash"></i> Eliminar    
 
-                        <td>María López</td>
+    </td>
 
-                        <td>Recursos Humanos</td>
+</tr>
 
-                        <td>29/05/2026</td>
+@endforeach
 
-                        <td>--</td>
-
-                        <td>
-                            <span class="badge bg-warning text-dark">
-                                Pendiente
-                            </span>
-                        </td>
-
-                        <td>
-
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i> Ver
-                            </button>
-
-                            <button class="btn btn-sm btn-outline-warning">
-                                <i class="bi bi-pencil-square"></i> Editar
-                            </button>
-
-                            <button class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i> Eliminar
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>003</td>
-
-                        <td>Carlos Gómez</td>
-
-                        <td>Soporte Técnico</td>
-
-                        <td>30/05/2026</td>
-
-                        <td>88</td>
-
-                        <td>
-                            <span class="badge bg-primary">
-                                En proceso
-                            </span>
-                        </td>
-
-                        <td>
-
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i> Ver
-                            </button>
-
-                            <button class="btn btn-sm btn-outline-warning">
-                                <i class="bi bi-pencil-square"></i> Editar
-                            </button>
-
-                            <button class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i> Eliminar
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>004</td>
-
-                        <td>Laura Hernández</td>
-
-                        <td>Administración</td>
-
-                        <td>31/05/2026</td>
-
-                        <td>91</td>
-
-                        <td>
-                            <span class="badge bg-success">
-                                Completada
-                            </span>
-                        </td>
-
-                        <td>
-
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i> Ver
-                            </button>
-
-                            <button class="btn btn-sm btn-outline-warning">
-                                <i class="bi bi-pencil-square"></i> Editar
-                            </button>
-
-                            <button class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i> Eliminar
-                            </button>
-
-                        </td>
-
-                    </tr>
+                   
 
                 </tbody>
 
@@ -405,7 +312,6 @@
     </div>
 
 </div>
-```
 
 </div>
 

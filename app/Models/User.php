@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Position;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -29,4 +30,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function evaluations()
+{
+    return $this->hasMany(UserEvaluation::class);
+}
+
+public function department()
+{
+    return $this->belongsTo(Department::class);     
+}
+
+public function position()
+{
+    return $this->belongsTo(Position::class);
+}
+
 }

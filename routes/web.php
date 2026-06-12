@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EvaluationController;
+use App\Http\Controllers\ColaboradorController;
 
 /* Ruta principal */
 
@@ -16,9 +18,7 @@ Route::get('/dashboard', function () {
 
 /* Evaluaciones */
 
-Route::get('/evaluaciones', function () {
-    return view('evaluaciones.index');
-});
+Route::get('/evaluaciones', [EvaluationController::class, 'index']);
 
 Route::get('/evaluaciones/create', function () {
     return view('evaluaciones.create');
@@ -70,9 +70,8 @@ Route::get('/configuracion/empresa', function () {
 
 /* Colaboradores */
 
-Route::get('/colaboradores', function () {
-    return view('colaboradores.index');
-});
+Route::get('/colaboradores', [ColaboradorController::class, 'index']);
+Route::get('/colaboradores/{id}', [ColaboradorController::class, 'show']);
 
 /* Reportes */
 

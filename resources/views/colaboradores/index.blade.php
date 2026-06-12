@@ -33,7 +33,7 @@
                 </span>
 
                 <h2>
-                    24
+                    {{ $totalUsers }}
                 </h2>
 
             </div>
@@ -53,7 +53,7 @@
                 </span>
 
                 <h2>
-                    20
+                    {{ $activeUsers }}
                 </h2>
 
             </div>
@@ -73,7 +73,7 @@
                 </span>
 
                 <h2>
-                    2
+                    {{ $inactiveUsers }}
                 </h2>
 
             </div>
@@ -93,7 +93,7 @@
                 </span>
 
                 <h2>
-                    2
+                    {{ $newUsers }}
                 </h2>
 
             </div>
@@ -144,47 +144,109 @@
 
     <div class="card-body">
 
-        <div class="row">
+        <form method="GET" action="/colaboradores">
 
-            <div class="col-md-8 mb-2">
+            <div class="row">
 
-                <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Buscar colaborador..."
+                <div class="col-md-8 mb-2">
+
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Buscar colaborador..."
+                        value="{{ request('search') }}"
+                    >
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <select
+                        name="order"
+                        class="form-select"
+                        onchange="this.form.submit()"
+                    >
+
+                        <option value="">
+                            Ordenar por
+                        </option>
+
+                        <option
+                            value="nombre"
+                            {{ request('order') == 'nombre' ? 'selected' : '' }}
+                        >
+                            Nombre
+                        </option>
+
+                        <option
+                            value="fecha"
+                            {{ request('order') == 'fecha' ? 'selected' : '' }}
+                        >
+                            Fecha de ingreso
+                        </option>
+
+                        <option
+                            value="estado"
+                            {{ request('order') == 'estado' ? 'selected' : '' }}
+                        >
+                            Estado
+                        </option>
+
+                        <option
+    value="id"
+    {{ request('order') == 'id' ? 'selected' : '' }}
+>
+    ID empleado
+</option>
+
+<option
+    value="departamento"
+    {{ request('order') == 'departamento' ? 'selected' : '' }}
+>
+    Departamento
+</option>
+
+<option
+    value="puesto"
+    {{ request('order') == 'puesto' ? 'selected' : '' }}
+>
+    Puesto
+</option>
+                         
+                        
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="mt-2">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
                 >
 
-            </div>
+                    <i class="bi bi-search"></i>
 
-            <div class="col-md-4">
+                    Buscar
 
-                <select class="form-select">
+                </button>
 
-                    <option>
-                        Ordenar por
-                    </option>
+                <a
+                    href="/colaboradores"
+                    class="btn btn-outline-secondary"
+                >
 
-                    <option>
-                        Nombre
-                    </option>
+                    Limpiar
 
-                    <option>
-                        Área
-                    </option>
-
-                    <option>
-                        Fecha de ingreso
-                    </option>
-
-                    <option>
-                        Estado
-                    </option>
-
-                </select>
+                </a>
 
             </div>
 
-        </div>
+        </form>
 
     </div>
 
@@ -214,7 +276,7 @@
                         <th>ID</th>
                         <th>Nombre</th>
                         <th>Puesto</th>
-                        <th>Área</th>
+                        <th>Departamento</th>
                         <th>Fecha Ingreso</th>
                         <th>Estado</th>
                         <th>Acciones</th>
@@ -225,142 +287,96 @@
 
                 <tbody>
 
-                    <tr>
+@foreach($users as $user)
 
-                        <td>
-                            <i class="bi bi-person-circle fs-3"></i>
-                        </td>
+<tr>
 
-                        <td>COL-001</td>
+    <td>
+        <i class="bi bi-person-circle fs-3"></i>
+    </td>
 
-                        <td>Juan Pérez</td>
+    <td>
+        {{ $user->employee_code }}
+    </td>
 
-                        <td>Desarrollador</td>
+    <td>
+        {{ $user->first_name }}
+        {{ $user->paternal_surname }}
+    </td>
 
-                        <td>TI</td>
+    <td>
+        {{ $user->position->name ?? 'Sin puesto' }}
+    </td>
 
-                        <td>01/02/2026</td>
+    <td>
+        {{ $user->department->name ?? 'Sin departamento' }}
+    </td>
 
-                        <td>
+    <td>
+        {{ $user->entry_date }}
+    </td>
 
-                            <span class="badge bg-success">
-                                Activo
-                            </span>
+    <td>
 
-                        </td>
+        @if($user->status == 'active')
 
-                        <td>
+            <span class="badge bg-success">
+                Activo
+            </span>
 
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i>
-                            </button>
+        @elseif($user->status == 'inactive')
 
-                            <button class="btn btn-sm btn-outline-warning">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
+            <span class="badge bg-danger">
+                Inactivo
+            </span>
 
-                            <button class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
+        @else
 
-                        </td>
+            <span class="badge bg-secondary">
+                {{ $user->status }}
+            </span>
 
-                    </tr>
+        @endif
 
-                    <tr>
+    </td>
 
-                        <td>
-                            <i class="bi bi-person-circle fs-3"></i>
-                        </td>
+    <td>
 
-                        <td>COL-002</td>
+        <a
+            href="/colaboradores/{{ $user->id }}"
+            class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-eye"></i>
+        </a>
 
-                        <td>Ana López</td>
+        <button class="btn btn-sm btn-outline-warning">
+            <i class="bi bi-pencil-square"></i>
+        </button>
 
-                        <td>Recursos Humanos</td>
+        <button class="btn btn-sm btn-outline-danger">
+            <i class="bi bi-trash"></i>
+        </button>
 
-                        <td>RH</td>
+    </td>
 
-                        <td>15/03/2026</td>
+</tr>
 
-                        <td>
+@endforeach
 
-                            <span class="badge bg-warning text-dark">
-                                Vacaciones
-                            </span>
+</tbody>
 
-                        </td>
-
-                        <td>
-
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i>
-                            </button>
-
-                            <button class="btn btn-sm btn-outline-warning">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
-
-                            <button class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>
-                            <i class="bi bi-person-circle fs-3"></i>
-                        </td>
-
-                        <td>COL-003</td>
-
-                        <td>Carlos Gómez</td>
-
-                        <td>Soporte Técnico</td>
-
-                        <td>TI</td>
-
-                        <td>20/01/2026</td>
-
-                        <td>
-
-                            <span class="badge bg-success">
-                                Activo
-                            </span>
-
-                        </td>
-
-                        <td>
-
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i>
-                            </button>
-
-                            <button class="btn btn-sm btn-outline-warning">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
-
-                            <button class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
+</table>
 
 </div>
 
+<div class="mt-4">
+
+    {{ $users->onEachSide(1)->links('pagination::bootstrap-5') }}
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 

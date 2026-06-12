@@ -1,5 +1,14 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import 'bootstrap-icons/font/bootstrap-icons.css';
+@import './navbar.css';
+@import './sidebar.css';
+@import './footer.css';
+@import './dashboard.css';
+@import './evaluaciones.css';
+@import './documentos.css';
+@import './colaboradores.css';
+@import './configuracion.css';
+@import './reportes.css';
 
 /* =========================
    ESTILOS GENERALES
@@ -48,3 +57,4 @@ body{
 
     background: transparent;
 }
+
