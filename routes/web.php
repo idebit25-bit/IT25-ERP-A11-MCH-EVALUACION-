@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\ColaboradorController;
+use App\Http\Controllers\DocumentoController;
 
 /* Ruta principal */
 
@@ -26,9 +27,7 @@ Route::get('/evaluaciones/create', function () {
 
 /* Documentos */
 
-Route::get('/documentos', function () {
-    return view('documentos.index');
-});
+Route::get('/documentos', [DocumentoController::class, 'index']);
 
 Route::get('/documentos/manuales', function () {
     return view('documentos.manuales');
@@ -45,6 +44,12 @@ Route::get('/documentos/politicas', function () {
 Route::get('/documentos/procedimientos', function () {
     return view('documentos.procedimientos');
 });
+
+Route::get('/documentos/{id}/edit' ,
+[DocumentoController::class, 'edit']);
+
+Route::get('/documentos/{id}', [DocumentoController::class, 'show']);
+
 
 /* Configuracion */
 

@@ -8,6 +8,7 @@ import '../css/documentos.css';
 import '../css/configuracion.css';
 import '../css/colaboradores.css';
 import '../css/reportes.css';
+import './documentos.js';
 
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 

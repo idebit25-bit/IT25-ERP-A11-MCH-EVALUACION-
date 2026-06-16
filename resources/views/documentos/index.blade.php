@@ -220,13 +220,18 @@
 
             </div>
 
-            <button class="btn btn-primary">
+<button
+    class="btn btn-primary"
+    data-bs-toggle="modal"
+    data-bs-target="#uploadModal"
+    data-tipo=""
+>
 
-                <i class="bi bi-upload"></i>
+    <i class="bi bi-upload"></i>
 
-                Subir documento
+    Subir documento
 
-            </button>
+</button>
 
         </div>
 
@@ -242,25 +247,30 @@
 
         <div class="d-flex gap-2 flex-wrap">
 
-            <button class="btn btn-dark">
-                Todos
-            </button>
+            <a href="/documentos"
+   class="btn {{ request('tipo') == null ? 'btn-dark' : 'btn-outline-dark' }}">
+    Todos
+</a>
 
-            <button class="btn btn-outline-primary">
-                Manuales
-            </button>
+            <a href="/documentos?tipo=Manual"
+   class="btn {{ request('tipo') == 'Manual' ? 'btn-primary' : 'btn-outline-primary' }}">
+    Manuales
+</a>
 
-            <button class="btn btn-outline-success">
-                Formatos
-            </button>
+<a href="/documentos?tipo=Formato"
+   class="btn {{ request('tipo') == 'Formato' ? 'btn-success' : 'btn-outline-success' }}">
+    Formatos
+</a>
 
-            <button class="btn btn-outline-warning">
-                Políticas
-            </button>
+<a href="/documentos?tipo=Política"
+   class="btn {{ request('tipo') == 'Política' ? 'btn-warning' : 'btn-outline-warning' }}">
+    Políticas
+</a>
 
-            <button class="btn btn-outline-danger">
-                Procedimientos
-            </button>
+<a href="/documentos?tipo=Procedimiento"
+   class="btn {{ request('tipo') == 'Procedimiento' ? 'btn-danger' : 'btn-outline-danger' }}">
+    Procedimientos
+</a>
 
         </div>
 
@@ -274,47 +284,89 @@
 
     <div class="card-body">
 
-        <div class="row">
+        <form method="GET" action="/documentos">
 
-            <div class="col-md-8 mb-2">
+            <div class="row">
 
-                <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Buscar documento..."
-                >
+                <div class="col-md-8">
+
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Buscar documento..."
+                        value="{{ request('search') }}"
+                    >
+
+                    <div class="mt-2">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+
+                            <i class="bi bi-search"></i>
+
+                            Buscar
+
+                        </button>
+
+                        <a
+                            href="/documentos"
+                            class="btn btn-outline-secondary"
+                        >
+
+                            Limpiar
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <select
+    name="order"
+    class="form-select"
+    onchange="this.form.submit()"
+>
+
+                        <option value="">
+    Ordenar por
+</option>
+
+<option value="tipo">
+    Tipo de documento
+</option>
+
+<option value="fecha">
+    Fecha
+</option>
+
+<option value="vigencia">
+    Vigencia
+</option>
+
+<option value="version">
+    Versión
+</option>
+
+<option value="nombre">
+    Nombre
+</option>
+
+<option value="estado">
+    Estado
+</option>
+
+                    </select>
+
+                </div>
 
             </div>
 
-            <div class="col-md-4">
-
-                <select class="form-select">
-
-                    <option>
-                        Ordenar por
-                    </option>
-
-                    <option>
-                        Tipo de documento
-                    </option>
-
-                    <option>
-                        Fecha
-                    </option>
-
-                    <option>
-                        Vigencia
-                    </option>
-
-                    <option>
-                        Versión
-                    </option>
-
-                </select>
-
-            </div>
-
-        </div>
+        </form>
 
     </div>
 
@@ -355,112 +407,85 @@
 
                 <tbody>
 
-                    <tr>
+@foreach($documentos as $documento)
 
-                        <td>DOC-001</td>
-                        <td>Manual ERP</td>
-                        <td>Manual</td>
-                        <td>1.0</td>
-                        <td>31/12/2026</td>
-                        <td>28/05/2026</td>
+<tr>
 
-                        <td>
+    <td>{{ $documento['id'] }}</td>
 
-                            <span class="badge bg-success">
-                                Vigente
-                            </span>
+    <td>{{ $documento['nombre'] }}</td>
 
-                        </td>
+    <td>{{ $documento['tipo'] }}</td>
 
-                        <td>
+    <td>{{ $documento['version'] }}</td>
 
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i>
-                            </button>
+    <td>{{ $documento['vigencia'] }}</td>
 
-                            <button class="btn btn-sm btn-outline-warning">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
+    <td>{{ $documento['fecha'] }}</td>
 
-                            <button class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
+    <td>
 
-                        </td>
+       @if($documento['estado'] == 'Vigente')
 
-                    </tr>
+    <span class="badge bg-success">
+        Vigente
+    </span>
 
-                    <tr>
+@elseif($documento['estado'] == 'Actualizado')
 
-                        <td>DOC-002</td>
-                        <td>Formato Evaluación</td>
-                        <td>Formato</td>
-                        <td>2.1</td>
-                        <td>31/12/2026</td>
-                        <td>29/05/2026</td>
+    <span class="badge bg-primary">
+        Actualizado
+    </span>
 
-                        <td>
+@elseif($documento['estado'] == 'Vencido')
 
-                            <span class="badge bg-primary">
-                                Actualizado
-                            </span>
+    <span class="badge bg-danger">
+        Vencido
+    </span>
 
-                        </td>
+@else
 
-                        <td>
+    <span class="badge bg-secondary">
+        {{ $documento['estado'] }}
+    </span>
 
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i>
-                            </button>
+@endif
 
-                            <button class="btn btn-sm btn-outline-warning">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
+    </td>
 
-                            <button class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
+    <td>
+        
 
-                        </td>
+        <a
+    href="/documentos/{{ $documento['id'] }}"
+    class="btn btn-sm btn-outline-primary"
+>
+    <i class="bi bi-eye"></i>
+        </a>
 
-                    </tr>
+        <a
+    href="/documentos/{{ $documento['id'] }}/edit"
+    class="btn btn-sm btn-outline-warning"
+>
+    <i class="bi bi-pencil-square"></i>
+       </a>
 
-                    <tr>
+        <button
+    class="btn btn-sm btn-outline-danger"
+    data-bs-toggle="modal"
+    data-bs-target="#deleteModal"
+    data-documento="{{ $documento['nombre'] }}"
+>
+    <i class="bi bi-trash"></i>
+</button>
 
-                        <td>DOC-003</td>
-                        <td>Política RH</td>
-                        <td>Política</td>
-                        <td>1.3</td>
-                        <td>31/12/2026</td>
-                        <td>30/05/2026</td>
+    </td>
 
-                        <td>
+</tr>
 
-                            <span class="badge bg-success">
-                                Vigente
-                            </span>
+@endforeach
 
-                        </td>
-
-                        <td>
-
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i>
-                            </button>
-
-                            <button class="btn btn-sm btn-outline-warning">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
-
-                            <button class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
+</tbody>
 
             </table>
 
@@ -471,5 +496,71 @@
 </div>
 
 </div>
+
+<!-- Modal eliminar documento -->
+
+<div
+    class="modal fade"
+    id="deleteModal"
+    tabindex="-1"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Confirmar eliminación
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                ></button>
+
+            </div>
+
+            <div class="modal-body">
+
+                ¿Desea eliminar el documento:
+
+                <strong id="documentoNombre"></strong>?
+
+                <br><br>
+
+                Esta acción no se puede deshacer.
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                >
+                    Eliminar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@include('documentos.partials.upload-modal')
 
 @endsection
