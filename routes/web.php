@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\ColaboradorController;
 use App\Http\Controllers\DocumentoController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReportesController;
 
 /* Ruta principal */
 
@@ -13,9 +15,9 @@ Route::get('/', function () {
 
 /* Dashboard */
 
-Route::get('/dashboard', function () {
-    return view('dashboard.index');
-});
+Route::get('/dashboard',
+    [DashboardController::class, 'index']
+);
 
 /* Evaluaciones */
 
@@ -80,6 +82,38 @@ Route::get('/colaboradores/{id}', [ColaboradorController::class, 'show']);
 
 /* Reportes */
 
-Route::get('/reportes', function () {
-    return view('reportes.index');
+Route::get('/reportes', [ReportesController::class, 'index'])
+->name('reportes.index');
+
+
+Route::get('/reportes/evaluaciones/pdf', function () {
+    return 'PDF de Evaluaciones';
+});
+
+Route::get('/reportes/evaluaciones/excel', function () {
+    return 'Excel de Evaluaciones';
+});
+
+Route::get('/reportes/colaboradores/pdf', function () {
+    return 'PDF de Colaboradores';
+});
+
+Route::get('/reportes/colaboradores/excel', function () {
+    return 'Excel de Colaboradores';
+});
+
+Route::get('/reportes/documentos/pdf', function () {
+    return 'PDF de Documentos';
+});
+
+Route::get('/reportes/documentos/excel', function () {
+    return 'Excel de Documentos';
+});
+
+Route::get('/reportes/general/pdf', function () {
+    return 'PDF General RH';
+});
+
+Route::get('/reportes/general/excel', function () {
+    return 'Excel General RH';
 });

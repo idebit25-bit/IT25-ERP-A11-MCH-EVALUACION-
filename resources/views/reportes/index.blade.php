@@ -25,8 +25,11 @@
 
     <div class="col-md-3 mb-3">
 
-        <div class="card border-0 dashboard-card">
-
+        <div
+    class="card border-0 dashboard-card reporte-card"
+    data-tipo="evaluaciones"
+    style="cursor:pointer;">
+        
             <div class="card-body text-center">
 
                 <i class="bi bi-clipboard-data text-primary fs-1"></i>
@@ -47,8 +50,12 @@
 
     <div class="col-md-3 mb-3">
 
-        <div class="card border-0 dashboard-card">
-
+        
+        <div
+    class="card border-0 dashboard-card reporte-card"
+    data-tipo="colaboradores"
+    style="cursor:pointer;">
+        
             <div class="card-body text-center">
 
                 <i class="bi bi-people text-success fs-1"></i>
@@ -69,8 +76,12 @@
 
     <div class="col-md-3 mb-3">
 
-        <div class="card border-0 dashboard-card">
-
+        
+        <div
+    class="card border-0 dashboard-card reporte-card"
+    data-tipo="documentos"
+    style="cursor:pointer;">
+        
             <div class="card-body text-center">
 
                 <i class="bi bi-folder2-open text-warning fs-1"></i>
@@ -91,14 +102,18 @@
 
     <div class="col-md-3 mb-3">
 
-        <div class="card border-0 dashboard-card">
-
+        
+        <div
+    class="card border-0 dashboard-card reporte-card"
+    data-tipo="general"
+    style="cursor:pointer;">
+        
             <div class="card-body text-center">
 
                 <i class="bi bi-bar-chart-line text-danger fs-1"></i>
 
                 <h5 class="mt-3">
-                    General ERP
+                    General RH
                 </h5>
 
                 <p class="card-text">
@@ -127,8 +142,48 @@
                     Evaluaciones realizadas
                 </span>
 
+                
                 <h2>
-                    156
+                    {{ $evaluacionesRealizadas }}
+                </h2>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card border-0 stats-card">
+
+            <div class="card-body">
+
+                <span class="stats-label">
+                    Colaboradores activos
+                </span>
+
+                
+                <h2>
+                    {{ $colaboradores }}
+                </h2>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card border-0 stats-card">
+
+            <div class="card-body">
+
+                <span class="stats-label">
+                    Documentos vigentes
+                </span>
+
+                <h2>
+                    {{ $documentosActivos }}
                 </h2>
 
             </div>
@@ -148,47 +203,7 @@
                 </span>
 
                 <h2>
-                    89%
-                </h2>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-3">
-
-        <div class="card border-0 stats-card">
-
-            <div class="card-body">
-
-                <span class="stats-label">
-                    Documentos activos
-                </span>
-
-                <h2>
-                    35
-                </h2>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-3">
-
-        <div class="card border-0 stats-card">
-
-            <div class="card-body">
-
-                <span class="stats-label">
-                    Colaboradores
-                </span>
-
-                <h2>
-                    24
+                {{ $promedioGeneral }}%
                 </h2>
 
             </div>
@@ -221,7 +236,11 @@
 
             </div>
 
-            <button class="btn btn-primary">
+            <button 
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modalGenerarReporte">
+
 
                 <i class="bi bi-file-earmark-arrow-down"></i>
 
@@ -245,43 +264,40 @@
 
             <div class="card-header">
 
-                Desempeño por área
+                Desempeño por Departamento
 
             </div>
 
             <div class="card-body">
 
+                @foreach($desempeñoDepartamentos as $departamento)
+
+                @php
+                $color = '#dc3545'; // Rojo
+                if ($departamento['porcentaje'] >= 90) {
+                    $color = '#198754'; // Verde
+                } elseif ($departamento['porcentaje'] >= 80) {
+                    $color = '#0d6efd'; // Azul
+                } elseif ($departamento['porcentaje'] >= 70) {
+                    $color = '#ffc107'; // Amarillo
+                }
+                @endphp
                 <div class="report-bar">
-
-                    <span>Desarrollo</span>
-
-                    <div class="bar-fill" style="width:90%"></div>
-
+                    <span>
+                        {{ $departamento['nombre'] }}
+                        ({{ $departamento['porcentaje'] }}%)
+                    </span>
+                    <div
+                    class="bar-fill"
+                    style="
+                    width: {{ $departamento['porcentaje'] }}%;
+                    background-color: {{ $color }};
+                    ">
+                    </div>
                 </div>
+                @endforeach
 
-                <div class="report-bar">
-
-                    <span>Recursos Humanos</span>
-
-                    <div class="bar-fill" style="width:75%"></div>
-
-                </div>
-
-                <div class="report-bar">
-
-                    <span>Soporte</span>
-
-                    <div class="bar-fill" style="width:85%"></div>
-
-                </div>
-
-                <div class="report-bar">
-
-                    <span>Administración</span>
-
-                    <div class="bar-fill" style="width:70%"></div>
-
-                </div>
+                  
 
             </div>
 
@@ -295,63 +311,46 @@
 
             <div class="card-header">
 
-                Resumen mensual
+                Evaluaciones Realizadas Por Mes
 
             </div>
 
             <div class="card-body">
 
-                <table class="table">
+               @foreach($resumenMensual as $registro)
 
-                    <thead>
+<div class="mb-3">
 
-                        <tr>
+    <div class="d-flex justify-content-between align-items-center mb-1">
 
-                            <th>Mes</th>
+        <span>
 
-                            <th>Evaluaciones</th>
+            {{ $registro['mes'] }}
 
-                        </tr>
+        </span>
 
-                    </thead>
+        <strong>
 
-                    <tbody>
+            {{ $registro['evaluaciones'] }}
 
-                        <tr>
+        </strong>
 
-                            <td>Enero</td>
+    </div>
 
-                            <td>15</td>
+    <div class="progress">
 
-                        </tr>
+        <div
+            class="progress-bar resumen-mesual-bar"
+            role="progressbar"
+            style="width: {{ $registro['evaluaciones'] * 1.8 }}%;">
 
-                        <tr>
+        </div>
 
-                            <td>Febrero</td>
+    </div>
 
-                            <td>22</td>
+</div>
 
-                        </tr>
-
-                        <tr>
-
-                            <td>Marzo</td>
-
-                            <td>18</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <td>Abril</td>
-
-                            <td>27</td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
+@endforeach
 
             </div>
 
@@ -373,17 +372,31 @@
 
     <div class="card-body">
 
-        <ul class="mb-0">
+@foreach($ultimosReportes as $reporte)
 
-            <li>Evaluaciones Mayo 2026</li>
+<div class="py-3 border-bottom">
 
-            <li>Resumen Recursos Humanos</li>
+    <div class="d-flex align-items-center mb-1">
 
-            <li>Documentos Vigentes</li>
+        <i class="bi bi-file-earmark-text me-2"></i>
 
-            <li>Reporte General ERP</li>
+        <strong>
 
-        </ul>
+            {{ $reporte['nombre'] }}
+
+        </strong>
+
+    </div>
+
+    <small class="text-muted">
+
+        {{ $reporte['tipo'] }} • Reciente
+
+    </small>
+
+</div>
+
+@endforeach
 
     </div>
 
@@ -427,86 +440,86 @@
 
                 </thead>
 
-                <tbody>
+<tbody>
 
-                    <tr>
+    @foreach($historialReportes as $reporte)
 
-                        <td>REP-001</td>
+    <tr>
 
-                        <td>Evaluaciones Mayo</td>
+        <td>
 
-                        <td>Evaluaciones</td>
+            {{ $reporte['id'] }}
 
-                        <td>31/05/2026</td>
+        </td>
 
-                        <td>César Hernández</td>
+        <td>
 
-                        <td>
+            {{ $reporte['nombre'] }}
 
-                            <span class="badge bg-success">
-                                Disponible
-                            </span>
+        </td>
 
-                        </td>
+        <td>
 
-                        <td>
+            {{ $reporte['tipo'] }}
 
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i>
-                            </button>
+        </td>
 
-                            <button class="btn btn-sm btn-outline-success">
-                                <i class="bi bi-download"></i>
-                            </button>
+        <td>
 
-                            <button class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
+            {{ $reporte['fecha'] }}
 
-                        </td>
+        </td>
 
-                    </tr>
+        <td>
 
-                    <tr>
+            {{ $reporte['usuario'] }}
 
-                        <td>REP-002</td>
+        </td>
 
-                        <td>Resumen RH</td>
+        <td>
 
-                        <td>Colaboradores</td>
+            <span class="badge bg-success">
 
-                        <td>30/05/2026</td>
+                {{ $reporte['estado'] }}
 
-                        <td>César Hernández</td>
+            </span>
 
-                        <td>
+        </td>
 
-                            <span class="badge bg-success">
-                                Disponible
-                            </span>
+        <td>
 
-                        </td>
+<button
+    class="btn btn-sm btn-outline-primary btnVerReporte"
 
-                        <td>
+    data-id="{{ $reporte['id'] }}"
+    data-nombre="{{ $reporte['nombre'] }}"
+    data-tipo="{{ $reporte['tipo'] }}"
+    data-fecha="{{ $reporte['fecha'] }}"
+    data-usuario="{{ $reporte['usuario'] }}"
+    data-estado="{{ $reporte['estado'] }}">
 
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i>
-                            </button>
+    <i class="bi bi-eye"></i>
 
-                            <button class="btn btn-sm btn-outline-success">
-                                <i class="bi bi-download"></i>
-                            </button>
+</button>
 
-                            <button class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
 
-                        </td>
+<button
+    class="btn btn-sm btn-outline-danger btnEliminarReporte"
 
-                    </tr>
+    data-id="{{ $reporte['id'] }}"
+    data-nombre="{{ $reporte['nombre'] }}">
 
-                </tbody>
+    <i class="bi bi-trash"></i>
 
+</button>
+
+        </td>
+
+    </tr>
+
+    @endforeach
+
+</tbody>
             </table>
 
         </div>
@@ -517,4 +530,327 @@
 
 </div>
 
+<!-- Modal Generar Reporte -->
+
+<div
+    class="modal fade"
+    id="modalGenerarReporte"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    Generar Reporte
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <form id="formGenerarReporte">
+
+                    <!-- Tipo -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Tipo de reporte
+
+                        </label>
+
+                        <select
+                            class="form-select"
+                            id="tipoReporte">
+
+                            <option value="evaluaciones">
+                                Evaluaciones
+                            </option>
+
+                            <option value="colaboradores">
+                                Colaboradores
+                            </option>
+
+                            <option value="documentos">
+                                Documentos
+                            </option>
+
+                            <option value="general">
+                                General RH
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- Periodo -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Periodo
+
+                        </label>
+
+                        <input
+                            type="month"
+                            class="form-control"
+                            id="periodo">
+
+                    </div>
+
+                    <!-- Formato -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Formato
+
+                        </label>
+
+                        <select
+                            class="form-select"
+                            id="formatoReporte">
+
+                            <option value="pdf">
+                                PDF
+                            </option>
+
+                            <option value="excel">
+                                Excel
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="btnGenerarReporte">
+
+                    Generar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Modal Tarjetas Superiores -->
+
+<div
+    class="modal fade"
+    id="modalDetalleReporte"
+    tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5
+                    class="modal-title"
+                    id="tituloReporte">
+
+                    Reporte
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div
+                class="modal-body"
+                id="contenidoReporte">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Modal Ver Reporte -->
+
+<div
+    class="modal fade"
+    id="modalVerReporte"
+    tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    Detalle del Reporte
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div
+                class="modal-body"
+                id="contenidoVerReporte">
+
+            </div>
+
+            <div class="modal-footer">
+
+    <button
+        type="button"
+        class="btn btn-danger"
+        id="btnPdfReporte">
+
+        <i class="bi bi-file-earmark-pdf"></i>
+
+        PDF
+
+    </button>
+
+    <button
+        type="button"
+        class="btn btn-success"
+        id="btnExcelReporte">
+
+        <i class="bi bi-file-earmark-excel"></i>
+
+        Excel
+
+    </button>
+
+    <button
+        type="button"
+        class="btn btn-secondary"
+        data-bs-dismiss="modal">
+
+        Cerrar
+
+    </button>
+
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Modal Eliminar Reporte -->
+ <div
+    class="modal fade"
+    id="modalEliminarReporte"
+    tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    Confirmar eliminación
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <p id="mensajeEliminarReporte">
+
+                </p>
+
+                <p class="text-danger mb-0">
+
+                    Esta acción no se puede deshacer.
+
+                </p>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                    id="btnConfirmarEliminar">
+
+                    Eliminar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 @endsection

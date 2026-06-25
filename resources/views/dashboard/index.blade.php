@@ -17,7 +17,7 @@
         </p>
 
         <small>
-            Última actualización: 31/05/2026
+            Última actualización: {{ now()->format('d/m/Y') }}
         </small>
 
     </div>
@@ -43,7 +43,7 @@
                             </p>
 
                             <h2 class="stats-number">
-                                24
+                                {{24}}
                             </h2>
 
                         </div>
