@@ -10,6 +10,8 @@ import '../css/colaboradores.css';
 import '../css/reportes.css';
 import './documentos.js';
 import './reportes.js';
+import './usuarios.js';
+import './roles.js';
 
 import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;

@@ -6,6 +6,7 @@ use App\Http\Controllers\ColaboradorController;
 use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportesController;
+use App\Http\Controllers\ConfiguracionController;
 
 /* Ruta principal */
 
@@ -55,25 +56,28 @@ Route::get('/documentos/{id}', [DocumentoController::class, 'show']);
 
 /* Configuracion */
 
-Route::get('/configuracion', function () {
-    return view('configuracion.index');
-});
+Route::get('/configuracion', [ConfiguracionController::class, 'index'])
+    ->name('configuracion.index');
 
-Route::get('/configuracion/usuarios', function () {
-    return view('configuracion.usuarios');
-});
+Route::get(
+    '/configuracion/usuarios',
+    [ConfiguracionController::class, 'usuarios']
+)->name('configuracion.usuarios');
 
-Route::get('/configuracion/roles', function () {
-    return view('configuracion.roles');
-});
+Route::get(
+    '/configuracion/roles',
+    [ConfiguracionController::class, 'roles']
+)->name('configuracion.roles');
 
-Route::get('/configuracion/perfil', function () {
-    return view('configuracion.perfil');
-});
+Route::get(
+    '/configuracion/perfil',
+    [ConfiguracionController::class, 'perfil']
+)->name('configuracion.perfil');
 
-Route::get('/configuracion/empresa', function () {
-    return view('configuracion.empresa');
-});
+Route::get(
+    '/configuracion/empresa',
+    [ConfiguracionController::class, 'empresa']
+)->name('configuracion.empresa');
 
 /* Colaboradores */
 

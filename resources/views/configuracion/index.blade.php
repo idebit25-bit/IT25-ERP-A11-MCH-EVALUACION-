@@ -128,85 +128,27 @@
 
 </div>
 
-    <!-- Indicadores -->
+<!-- Indicadores -->
 
-    <div class="row mb-4">
+<div class="row mb-4">
 
-        <div class="col-md-3">
+    <div class="col-md-3">
 
-            <div class="card border-0 stats-card">
+        <div class="card border-0 stats-card">
 
-                <div class="card-body">
+            <div class="card-body">
 
-                    <span class="stats-label">
-                        Usuarios registrados
-                    </span>
+                <span class="stats-label">
 
-                    <h2>
-                        12
-                    </h2>
+                    Usuarios registrados
 
-                </div>
+                </span>
 
-            </div>
+                <h2>
 
-        </div>
+                    {{ $usuarios }}
 
-        <div class="col-md-3">
-
-            <div class="card border-0 stats-card">
-
-                <div class="card-body">
-
-                    <span class="stats-label">
-                        Roles activos
-                    </span>
-
-                    <h2>
-                        5
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card border-0 stats-card">
-
-                <div class="card-body">
-
-                    <span class="stats-label">
-                        Permisos configurados
-                    </span>
-
-                    <h2>
-                        28
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card border-0 stats-card">
-
-                <div class="card-body">
-
-                    <span class="stats-label">
-                        Respaldos realizados
-                    </span>
-
-                    <h2>
-                        10
-                    </h2>
-
-                </div>
+                </h2>
 
             </div>
 
@@ -214,67 +156,23 @@
 
     </div>
 
-    <!-- Configuración General -->
+    <div class="col-md-3">
 
-    <div class="card border-0 table-card mb-4">
+        <div class="card border-0 stats-card">
 
-        <div class="card-header">
+            <div class="card-body">
 
-            Configuración General del Sistema
+                <span class="stats-label">
 
-        </div>
+                    Roles activos
 
-        <div class="card-body">
+                </span>
 
-            <div class="row">
+                <h2>
 
-                <div class="col-md-6 mb-3">
+                    {{ $roles }}
 
-                    <strong>
-                        Nombre del sistema:
-                    </strong>
-
-                    <p class="mb-0">
-                        Capital Humano ERP
-                    </p>
-
-                </div>
-
-                <div class="col-md-6 mb-3">
-
-                    <strong>
-                        Versión:
-                    </strong>
-
-                    <p class="mb-0">
-                        1.0.0
-                    </p>
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <strong>
-                        Última actualización:
-                    </strong>
-
-                    <p class="mb-0">
-                        31/05/2026
-                    </p>
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <strong>
-                        Administrador:
-                    </strong>
-
-                    <p class="mb-0">
-                        César Hernández
-                    </p>
-
-                </div>
+                </h2>
 
             </div>
 
@@ -282,155 +180,276 @@
 
     </div>
 
-    <!-- Tabla -->
+    <div class="col-md-3">
 
-    <div class="card border-0 table-card">
+        <div class="card border-0 stats-card">
 
-        <div class="card-header">
+            <div class="card-body">
 
-            Configuraciones recientes
+                <span class="stats-label">
 
-        </div>
+                    Permisos configurados
 
-        <div class="card-body">
+                </span>
 
-            <div class="table-responsive">
+                <h2>
 
-                <table class="table align-middle">
+                    {{ $permisos }}
 
-                    <thead>
-
-                        <tr>
-
-                            <th>ID</th>
-
-                            <th>Configuración</th>
-
-                            <th>Tipo</th>
-
-                            <th>Fecha</th>
-
-                            <th>Estado</th>
-
-                            <th>Acciones</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        <tr>
-
-                            <td>CFG-001</td>
-
-                            <td>Usuario administrador</td>
-
-                            <td>Usuario</td>
-
-                            <td>31/05/2026</td>
-
-                            <td>
-                                <span class="badge bg-success">
-                                    Activo
-                                </span>
-                            </td>
-
-                            <td>
-
-                                <button class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-
-                                <button class="btn btn-sm btn-outline-warning">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-
-                                <button class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                        <tr>
-
-                            <td>CFG-002</td>
-
-                            <td>Rol Recursos Humanos</td>
-
-                            <td>Rol</td>
-
-                            <td>30/05/2026</td>
-
-                            <td>
-                                <span class="badge bg-success">
-                                    Activo
-                                </span>
-                            </td>
-
-                            <td>
-
-                                <button class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-
-                                <button class="btn btn-sm btn-outline-warning">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-
-                                <button class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                        <tr>
-
-                            <td>CFG-003</td>
-
-                            <td>Datos de la empresa</td>
-
-                            <td>Empresa</td>
-
-                            <td>29/05/2026</td>
-
-                            <td>
-                                <span class="badge bg-primary">
-                                    Actualizado
-                                </span>
-                            </td>
-
-                            <td>
-
-                                <button class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-
-                                <button class="btn btn-sm btn-outline-warning">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-
-                                <button class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
+                </h2>
 
             </div>
 
         </div>
 
     </div>
+
+    <div class="col-md-3">
+
+        <div class="card border-0 stats-card">
+
+            <div class="card-body">
+
+                <span class="stats-label">
+
+                    Respaldos realizados
+
+                </span>
+
+                <h2>
+
+                    {{ $respaldos }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Configuración General -->
+
+<div class="card border-0 table-card mb-4">
+
+    <div class="card-header">
+
+        Configuración General del Sistema
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <!-- Sistema -->
+
+            <div class="col-md-6 mb-3">
+
+                <strong>
+
+                    Nombre del sistema:
+
+                </strong>
+
+                <p class="mb-0">
+
+                    {{ $configuracionGeneral['sistema'] }}
+
+                </p>
+
+            </div>
+
+            <!-- Versión -->
+
+            <div class="col-md-6 mb-3">
+
+                <strong>
+
+                    Versión:
+
+                </strong>
+
+                <p class="mb-0">
+
+                    {{ $configuracionGeneral['version'] }}
+
+                </p>
+
+            </div>
+
+            <!-- Última actualización -->
+
+            <div class="col-md-6">
+
+                <strong>
+
+                    Última actualización:
+
+                </strong>
+
+                <p class="mb-0">
+
+                    {{ $configuracionGeneral['ultimaActualizacion'] }}
+
+                </p>
+
+            </div>
+
+            <!-- Administrador -->
+
+            <div class="col-md-6">
+
+                <strong>
+
+                    Administrador:
+
+                </strong>
+
+                <p class="mb-0">
+
+                    {{ $configuracionGeneral['administrador'] }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+ <!-- Bitácora del sistema -->
+
+<div class="card border-0 table-card">
+
+    <div class="card-header">
+
+        Bitácora del Sistema
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table align-middle">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Fecha</th>
+
+                        <th>Usuario</th>
+
+                        <th>Acción</th>
+
+                        <th>Módulo</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+
+                            31/05/2026
+
+                        </td>
+
+                        <td>
+
+                            César Hernández
+
+                        </td>
+
+                        <td>
+
+                            Creó un usuario administrador.
+
+                        </td>
+
+                        <td>
+
+                            Usuarios
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+
+                            30/05/2026
+
+                        </td>
+
+                        <td>
+
+                            César Hernández
+
+                        </td>
+
+                        <td>
+
+                            Actualizó el rol Recursos Humanos.
+
+                        </td>
+
+                        <td>
+
+                            Roles y Permisos
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+
+                            29/05/2026
+
+                        </td>
+
+                        <td>
+
+                            César Hernández
+
+                        </td>
+
+                        <td>
+
+                            Actualizó la información de la empresa.
+
+                        </td>
+
+                        <td>
+
+                            Empresa
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
 
 </div>
 
