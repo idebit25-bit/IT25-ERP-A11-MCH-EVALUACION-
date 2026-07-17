@@ -124,13 +124,14 @@
 
             </div>
 
-            <button class="btn btn-primary">
+ <a
+    href="{{ route('colaboradores.create') }}"
+    class="btn btn-primary"
+>
+    <i class="bi bi-person-plus"></i>
 
-                <i class="bi bi-person-plus"></i>
-
-                Nuevo colaborador
-
-            </button>
+    Nuevo colaborador
+</a>
 
         </div>
 
@@ -343,18 +344,63 @@
     <td>
 
         <a
-            href="/colaboradores/{{ $user->id }}"
+            href="{{ route('colaboradores.show', $user->id) }}"
             class="btn btn-sm btn-outline-primary">
             <i class="bi bi-eye"></i>
         </a>
 
-        <button class="btn btn-sm btn-outline-warning">
+        
+        <a
+            href="{{ route('colaboradores.edit', $user->id) }}"
+            class="btn btn-sm btn-outline-warning"
+        >
             <i class="bi bi-pencil-square"></i>
+        </a>
+
+
+@if($user->status == 'active')
+
+    <form
+        action="{{ route('colaboradores.destroy', $user->id) }}"
+        method="POST"
+        class="d-inline">
+
+        @csrf
+        @method('DELETE')
+
+        <button
+            type="submit"
+            class="btn btn-sm btn-outline-danger"
+            onclick="return confirm('¿Desea desactivar este colaborador?')">
+
+            <i class="bi bi-person-x"></i>
+
         </button>
 
-        <button class="btn btn-sm btn-outline-danger">
-            <i class="bi bi-trash"></i>
+    </form>
+
+@else
+
+    <form
+        action="{{ route('colaboradores.destroy', $user->id) }}"
+        method="POST"
+        class="d-inline">
+
+        @csrf
+        @method('DELETE')
+
+        <button
+            type="submit"
+            class="btn btn-sm btn-outline-success"
+            onclick="return confirm('¿Desea reactivar este colaborador?')">
+
+            <i class="bi bi-person-check"></i>
+
         </button>
+
+    </form>
+
+@endif
 
     </td>
 

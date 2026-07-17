@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\UserEvaluation;
 use App\Models\User;
+use App\Models\Department;
+use App\Models\Position;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 
 class ColaboradorController extends Controller
 {
@@ -86,4 +90,98 @@ public function show($id)
     return view('colaboradores.show', compact('user'));
 
 }
+
+public function create()
+{
+    $user = new User();
+
+    $departments = Department::where('is_active', true)
+        ->orderBy('name')
+        ->get();
+
+    $positions = Position::where('is_active', true)
+        ->orderBy('name')
+        ->get();
+
+    return view('colaboradores.create', compact(
+        'user',
+        'departments',
+        'positions'
+    ));
+}
+
+public function store(StoreUserRequest $request)
+{
+    User::create($request->validated());
+
+    return redirect()
+        ->route('colaboradores.index')
+        ->with('success', 'Colaborador registrado correctamente.');
+}
+
+public function edit($id)
+{
+    $user = User::findOrFail($id);
+
+    $departments = Department::where('is_active', true)
+        ->orderBy('name')
+        ->get();
+
+    $positions = Position::where('is_active', true)
+        ->orderBy('name')
+        ->get();
+
+    return view('colaboradores.edit', compact(
+        'user',
+        'departments',
+        'positions'
+    ));
+}
+
+public function update(UpdateUserRequest $request, $id)
+{
+    $user = User::findOrFail($id);
+
+    $data = $request->validated();
+
+    // Si no se captura una nueva contraseña, conservar la actual
+    if (empty($data['password'])) {
+        unset($data['password']);
+    }
+
+    $user->update($data);
+
+    return redirect()
+        ->route('colaboradores.index')
+        ->with('success', 'Colaborador actualizado correctamente.');
+}
+public function destroy($id)
+{
+    $user = User::findOrFail($id);
+
+    if ($user->status === 'active') {
+
+        $user->update([
+            'status' => 'inactive'
+        ]);
+
+        $message = 'Colaborador desactivado correctamente.';
+
+    } else {
+
+        $user->update([
+            'status' => 'active'
+        ]);
+
+        $message = 'Colaborador reactivado correctamente.';
+
+    }
+
+    return redirect()
+        ->route('colaboradores.index')
+        ->with('success', $message);
+}
+
+
+
 }

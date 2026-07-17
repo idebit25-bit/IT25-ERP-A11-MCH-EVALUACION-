@@ -99,3 +99,53 @@
 
     opacity: 0.8;
 }
+
+/* =========================
+   DROPDOWN USUARIO
+========================= */
+
+.navbar-user-info{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    cursor: pointer;
+
+    padding: 6px 10px;
+
+    border-radius: 8px;
+
+    transition: background .2s ease;
+}
+
+.navbar-user-info:hover{
+
+    background: rgba(255,255,255,.08);
+
+}
+
+.navbar-user-info .bi-chevron-down{
+
+    font-size: 11px;
+
+    margin-left: 6px;
+
+    opacity: .8;
+
+}
+
+.navbar-user i:first-child{
+
+    font-size: 24px;
+
+    margin-right: 2px;
+
+}
+
+.dropdown-menu{
+
+    margin-top: 12px;
+}

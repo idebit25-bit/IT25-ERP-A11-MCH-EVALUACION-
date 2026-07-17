@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
+
 class ConfiguracionController extends Controller
 {
     public function index()
@@ -32,7 +34,14 @@ class ConfiguracionController extends Controller
 
                 'administrador' => 'César Hernández'
 
+                
+
             ];
+
+            $activityLogs = ActivityLog::with('user')
+             ->latest()
+             ->take(5)
+             ->get();
 
         } catch (\Exception $e) {
 
@@ -40,6 +49,8 @@ class ConfiguracionController extends Controller
             $roles = 0;
             $permisos = 0;
             $respaldos = 0;
+
+            $activityLogs = collect();
 
             $configuracionGeneral = [
 
@@ -62,7 +73,8 @@ class ConfiguracionController extends Controller
                 'roles',
                 'permisos',
                 'respaldos',
-                'configuracionGeneral'
+                'configuracionGeneral',
+                'activityLogs'
             )
         );
     }
@@ -212,90 +224,6 @@ public function roles()
         'configuracion.roles',
         compact(
             'roles'
-        )
-    );
-
-}
-
-public function perfil()
-{
-    try {
-
-        // Datos simulados del perfil
-
-        $perfil = [
-
-            'nombre' => 'César Hernández',
-
-            'usuario' => 'chernandez',
-
-            'correo' => 'cesar@empresa.com',
-
-            'telefono' => '33 1234 5678',
-
-            'rol' => 'Administrador',
-
-            'ultimoAcceso' => '25/06/2026 08:30 a.m.'
-
-        ];
-
-    } catch (\Exception $e) {
-
-        // Si ocurre un error se devuelve un arreglo vacío
-
-        $perfil = [];
-
-    }
-
-    return view(
-        'configuracion.perfil',
-        compact(
-            'perfil'
-        )
-    );
-
-}
-
-public function empresa()
-{
-    try {
-
-        // Datos simulados de la empresa
-
-        $empresa = [
-
-            'nombre' => 'Capital Humano ERP',
-
-            'razonSocial' => 'Capital Humano ERP S.A. de C.V.',
-
-            'rfc' => 'CHE260531ABC',
-
-            'telefono' => '33 1234 5678',
-
-            'correo' => 'contacto@capitalhumano.com',
-
-            'direccion' => 'Guadalajara, Jalisco, México',
-
-            'sitioWeb' => 'www.capitalhumano.com',
-
-            'moneda' => 'Peso Mexicano (MXN)',
-
-            'zonaHoraria' => 'UTC -06:00'
-
-        ];
-
-    } catch (\Exception $e) {
-
-        // Si ocurre un error se devuelve un arreglo vacío
-
-        $empresa = [];
-
-    }
-
-    return view(
-        'configuracion.empresa',
-        compact(
-            'empresa'
         )
     );
 

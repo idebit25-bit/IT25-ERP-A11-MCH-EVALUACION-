@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\UserEvaluation;
-use App\Models\CustomerDocument;
-use App\Models\OrderDocument;
-use App\Models\Contract;
 
 class DashboardController extends Controller
 {
@@ -14,25 +11,20 @@ class DashboardController extends Controller
     {
         try {
 
-    $colaboradores = User::count();
+            $colaboradores = User::count();
 
-    $evaluaciones = UserEvaluation::count();
+            $evaluaciones = UserEvaluation::count();
 
-    $documentos =
-        CustomerDocument::count()
-        + OrderDocument::count()
-        + Contract::count();
+            $documentos = 0;
 
-} catch (\Exception $e) {
+        } catch (\Exception $e) {
 
-// Temporal: servidor MySQL remoto fuera de servicio
-$colaboradores = 6;
-    $evaluaciones = 3;
-    $documentos = 18;
+            $colaboradores = 6;
+            $evaluaciones = 3;
+            $documentos = 18;
+        }
 
-}
-
-        $reportes = 8; // Temporal
+        $reportes = 8;
 
         return view('dashboard.index', compact(
             'colaboradores',

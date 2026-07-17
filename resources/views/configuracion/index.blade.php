@@ -20,109 +20,283 @@
 
     <!-- Tarjetas -->
 
-<div class="row mb-4">
+<!-- Administración -->
 
-    <div class="col-md-3 mb-3">
+<div class="mb-4">
 
-        <a href="/configuracion/usuarios" class="text-decoration-none">
+    <h4 class="mb-3">
 
-            <div class="card border-0 dashboard-card">
+        <i class="bi bi-gear-fill text-primary"></i>
 
-                <div class="card-body text-center">
+        Administración
 
-                    <i class="bi bi-people text-primary fs-1"></i>
+    </h4>
 
-                    <h5 class="mt-3">
-                        Usuarios
-                    </h5>
+    <div class="row">
 
-                    <p class="card-text">
-                        Administración de usuarios del sistema.
-                    </p>
+        <div class="col-md-3 mb-3">
+
+            <a
+                href="{{ route('configuracion.usuarios') }}"
+                class="text-decoration-none">
+
+                <div class="card border-0 dashboard-card">
+
+                    <div class="card-body text-center">
+
+                        <i class="bi bi-people text-primary fs-1"></i>
+
+                        <h5 class="mt-3">
+
+                            Usuarios
+
+                        </h5>
+
+                        <p class="card-text">
+
+                            Administración de usuarios del sistema.
+
+                        </p>
+
+                    </div>
 
                 </div>
 
-            </div>
+            </a>
 
-        </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <a
+                href="{{ route('configuracion.roles') }}"
+                class="text-decoration-none">
+
+                <div class="card border-0 dashboard-card">
+
+                    <div class="card-body text-center">
+
+                        <i class="bi bi-shield-lock text-success fs-1"></i>
+
+                        <h5 class="mt-3">
+
+                            Roles y permisos
+
+                        </h5>
+
+                        <p class="card-text">
+
+                            Administración de accesos del sistema.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
 
     </div>
 
-    <div class="col-md-3 mb-3">
+</div>
 
-        <a href="/configuracion/roles" class="text-decoration-none">
+<!-- Configuración de Evaluaciones -->
 
-            <div class="card border-0 dashboard-card">
+<div class="mb-4">
 
-                <div class="card-body text-center">
+    <h4 class="mb-3">
 
-                    <i class="bi bi-shield-lock text-success fs-1"></i>
+        <i class="bi bi-clipboard2-check-fill text-success"></i>
 
-                    <h5 class="mt-3">
-                        Roles y Permisos
-                    </h5>
+        Configuración de Evaluaciones
 
-                    <p class="card-text">
-                        Control de accesos y privilegios.
-                    </p>
+    </h4>
 
-                </div>
+    <div class="row">
 
-            </div>
+        <div class="col-md-3 mb-3">
 
-        </a>
+            <a
+                href="{{ route('evaluation-types.index') }}"
+                class="text-decoration-none">
 
-    </div>
+                <div class="card border-0 dashboard-card">
 
-    <div class="col-md-3 mb-3">
+                    <div class="card-body text-center">
 
-        <a href="/configuracion/perfil" class="text-decoration-none">
+                        <i class="bi bi-ui-checks-grid text-primary fs-1"></i>
 
-            <div class="card border-0 dashboard-card">
+                        <h5 class="mt-3">
 
-                <div class="card-body text-center">
+                            Tipos de evaluación
 
-                    <i class="bi bi-person-circle text-warning fs-1"></i>
+                        </h5>
 
-                    <h5 class="mt-3">
-                        Perfil
-                    </h5>
-
-                    <p class="card-text">
-                        Configuración de información personal.
-                    </p>
+                    </div>
 
                 </div>
 
-            </div>
+            </a>
 
-        </a>
+        </div>
 
-    </div>
+        <div class="col-md-3 mb-3">
 
-    <div class="col-md-3 mb-3">
+            <a
+                href="{{ route('evaluation-periods.index') }}"
+                class="text-decoration-none">
 
-        <a href="/configuracion/empresa" class="text-decoration-none">
+                <div class="card border-0 dashboard-card">
 
-            <div class="card border-0 dashboard-card">
+                    <div class="card-body text-center">
 
-                <div class="card-body text-center">
+                        <i class="bi bi-calendar-event text-danger fs-1"></i>
 
-                    <i class="bi bi-building text-danger fs-1"></i>
+                        <h5 class="mt-3">
 
-                    <h5 class="mt-3">
-                        Empresa
-                    </h5>
+                            Períodos
 
-                    <p class="card-text">
-                        Datos generales de la organización.
-                    </p>
+                        </h5>
+
+                    </div>
 
                 </div>
 
-            </div>
+            </a>
 
-        </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <a
+                href="{{ route('evaluation-categories.index') }}"
+                class="text-decoration-none">
+
+                <div class="card border-0 dashboard-card">
+
+                    <div class="card-body text-center">
+
+                        <i class="bi bi-folder2-open text-warning fs-1"></i>
+
+                        <h5 class="mt-3">
+
+                            Categorías
+
+                        </h5>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <a
+                href="{{ route('evaluation-competencies.index') }}"
+                class="text-decoration-none">
+
+                <div class="card border-0 dashboard-card">
+
+                    <div class="card-body text-center">
+
+                        <i class="bi bi-bullseye text-success fs-1"></i>
+
+                        <h5 class="mt-3">
+
+                            Competencias
+
+                        </h5>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <a
+                href="{{ route('evaluation-scales.index') }}"
+                class="text-decoration-none">
+
+                <div class="card border-0 dashboard-card">
+
+                    <div class="card-body text-center">
+
+                        <i class="bi bi-sliders text-info fs-1"></i>
+
+                        <h5 class="mt-3">
+
+                            Escalas
+
+                        </h5>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <a
+                href="{{ route('evaluation-questions.index') }}"
+                class="text-decoration-none">
+
+                <div class="card border-0 dashboard-card">
+
+                    <div class="card-body text-center">
+
+                        <i class="bi bi-patch-question text-primary fs-1"></i>
+
+                        <h5 class="mt-3">
+
+                            Banco de preguntas
+
+                        </h5>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+
+            <a
+                href="{{ route('evaluation-templates.index') }}"
+                class="text-decoration-none">
+
+                <div class="card border-0 dashboard-card">
+
+                    <div class="card-body text-center">
+
+                        <i class="bi bi-file-earmark-text text-secondary fs-1"></i>
+
+                        <h5 class="mt-3">
+
+                            Plantillas
+
+                        </h5>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
 
     </div>
 
@@ -236,7 +410,7 @@
 
     <div class="card-header">
 
-        Configuración General del Sistema
+        Información General del Sistema
 
     </div>
 
@@ -357,95 +531,71 @@
 
                 <tbody>
 
-                    <tr>
+@forelse($activityLogs as $log)
 
-                        <td>
+<tr>
 
-                            31/05/2026
+    <td>
 
-                        </td>
+        {{ $log->created_at->format('d/m/Y H:i') }}
 
-                        <td>
+    </td>
 
-                            César Hernández
+    <td>
 
-                        </td>
+        {{ trim(
+            ($log->user?->first_name ?? '') . ' ' .
+            ($log->user?->paternal_surname ?? '')
+        ) }}
 
-                        <td>
+    </td>
 
-                            Creó un usuario administrador.
+    <td>
 
-                        </td>
+        {{ $log->description }}
 
-                        <td>
+    </td>
 
-                            Usuarios
+    <td>
 
-                        </td>
+        {{ $log->module }}
 
-                    </tr>
+    </td>
 
-                    <tr>
+</tr>
 
-                        <td>
+@empty
 
-                            30/05/2026
+<tr>
 
-                        </td>
+    <td colspan="4" class="text-center">
 
-                        <td>
+        No existen registros.
 
-                            César Hernández
+    </td>
 
-                        </td>
+</tr>
 
-                        <td>
-
-                            Actualizó el rol Recursos Humanos.
-
-                        </td>
-
-                        <td>
-
-                            Roles y Permisos
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>
-
-                            29/05/2026
-
-                        </td>
-
-                        <td>
-
-                            César Hernández
-
-                        </td>
-
-                        <td>
-
-                            Actualizó la información de la empresa.
-
-                        </td>
-
-                        <td>
-
-                            Empresa
-
-                        </td>
-
-                    </tr>
+@endforelse
 
                 </tbody>
 
             </table>
 
         </div>
+<div class="text-end mt-3">
+
+    <a
+        href="{{ route('activity-logs.index') }}"
+        class="btn btn-outline-dark btn-sm">
+
+        <i class="bi bi-clock-history"></i>
+
+        Ver bitácora completa
+
+    </a>
+
+</div>
 
     </div>
 
