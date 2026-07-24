@@ -57,4 +57,24 @@ class EvaluationTemplate extends Model
     {
         return $this->hasMany(Evaluation::class, 'template_id');
     }
+
+    /**
+ * Preguntas asociadas a la plantilla.
+ */
+public function questions()
+{
+    return $this->belongsToMany(
+        EvaluationQuestion::class,
+        'evaluation_template_questions',
+        'template_id',
+        'question_id'
+    )
+    ->withPivot([
+        'order_number',
+        'weight',
+        'is_required',
+    ])
+    ->orderBy('evaluation_template_questions.order_number');
+}
+
 }

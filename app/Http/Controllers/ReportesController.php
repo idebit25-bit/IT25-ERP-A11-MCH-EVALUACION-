@@ -2,122 +2,76 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Evaluation;
+use App\Models\User;
+use App\Models\Department;
+use App\Models\EvaluationType;
+use App\Models\EvaluationPeriod;
+
+
+
 class ReportesController extends Controller
 {
+
 public function index()
 {
     try {
 
-        // Cuando vuelva la BD aquí irán las consultas reales
+// Obtener evaluaciones para el Dashboard
+$evaluacionesDashboard = Evaluation::with([
+    'user',
+    'evaluationType',
+    'period',
+    'evaluator'
+])->get();
 
-    // UserEvaluation::count()
-    $evaluacionesRealizadas = 0;
-    // Promedio general de evaluaciones
-    $promedioGeneral = 0;
-    // CustomerDocument + OrderDocument + Contract
-    $documentosActivos = 35;
-    // User::count()
-    $colaboradores = 6;
+// Total de evaluaciones
+$evaluacionesRealizadas = $evaluacionesDashboard->count();
 
-    $desempeñoDepartamentos = [
-        [
-            'nombre' => 'Ingeniería y Proyectos',
-            'porcentaje' => 90
-             ],
-            [
-                'nombre' => 'Recursos Humanos',
-                'porcentaje' => 75
-            ],
-            [
-                'nombre' => 'Administración y Finanzas',
-                'porcentaje' => 80
-            ],
-            [
-                'nombre' => 'Sistemas (TI)',
-                'porcentaje' => 65
-            ],
-       
+// Promedio general
+$promedioGeneral = round(
+    $evaluacionesDashboard->avg('total_score') ?? 0,
+    2
+);
+
+// Temporal mientras se integra el módulo de documentos
+$documentosActivos = 35;
+
+// Total de colaboradores
+$colaboradores = User::count();
+
+
+    $desempeñoDepartamentos = Department::with([
+    'users.evaluations'
+])->get()->map(function ($department) {
+
+    $evaluaciones = $department->users
+        ->flatMap(function ($user) {
+            return $user->evaluations;
+        });
+
+    $promedio = round($evaluaciones->avg('total_score') ?? 0, 2);
+
+    return [
+        'nombre' => $department->name,
+        'porcentaje' => $promedio
     ];
 
-    $resumenMensual = [
+})->toArray();
 
-    [
-        'mes' => 'Enero',
-        'evaluaciones' => 15
-    ],
+$resumenMensual = $evaluacionesDashboard
+    ->groupBy(function ($evaluacion) {
+        return \Carbon\Carbon::parse($evaluacion->evaluation_date)->translatedFormat('F');
+    })
+    ->map(function ($evaluaciones, $mes) {
+        return [
+            'mes' => ucfirst($mes),
+            'evaluaciones' => $evaluaciones->count()
+        ];
+    })
+    ->values()
+    ->toArray();
 
-    [
-        'mes' => 'Febrero',
-        'evaluaciones' => 22
-    ],
-
-    [
-        'mes' => 'Marzo',
-        'evaluaciones' => 18
-    ],
-
-    [
-        'mes' => 'Abril',
-        'evaluaciones' => 27
-    ],
-
-    [
-        'mes' => 'Mayo',
-        'evaluaciones' => 31
-    ],
-
-    [
-        'mes' => 'Junio',
-        'evaluaciones' => 43
-    ]
-
-];
-
-$ultimosReportes = [
-
-    [
-        'nombre' => 'Evaluaciones Mayo 2026',
-        'tipo' => 'Evaluaciones'
-    ],
-
-    [
-        'nombre' => 'Resumen Recursos Humanos',
-        'tipo' => 'RH'
-    ],
-
-    [
-        'nombre' => 'Documentos Vigentes',
-        'tipo' => 'Documentos'
-    ],
-
-    [
-        'nombre' => 'Reporte General RH',
-        'tipo' => 'General'
-    ]
-
-];
-
-$historialReportes = [
-
-    [
-        'id' => 'REP-001',
-        'nombre' => 'Evaluaciones Mayo',
-        'tipo' => 'Evaluaciones',
-        'fecha' => '31/05/2026',
-        'usuario' => 'César Hernández',
-        'estado' => 'Disponible'
-    ],
-
-    [
-        'id' => 'REP-002',
-        'nombre' => 'Reporte General RH',
-        'tipo' => 'General RH',
-        'fecha' => '30/05/2026',
-        'usuario' => 'César Hernández',
-        'estado' => 'Disponible'
-    ]
-
-];
 
     } catch (\Exception $e) {
 
@@ -133,16 +87,72 @@ $historialReportes = [
         $historialReportes = [];
     }
 
-    return view('reportes.index', compact(
-        'evaluacionesRealizadas',
-        'promedioGeneral',
-        'documentosActivos',
-        'colaboradores',
-        'desempeñoDepartamentos',
-        'resumenMensual',
-        'ultimosReportes',
-        'historialReportes'
-    ));
+// Catálogos para filtros
+
+$usuarios = User::where('status', 'active')
+    ->orderBy('first_name')
+    ->get();
+
+$departamentos = Department::where('is_active', true)
+    ->orderBy('name')
+    ->get();
+
+$tiposEvaluacion = EvaluationType::where('is_active', true)
+    ->orderBy('name')
+    ->get();
+
+$periodos = EvaluationPeriod::where('is_active', true)
+    ->orderBy('name')
+    ->get();
+
+// Evaluaciones para el historial
+$evaluaciones = Evaluation::with([
+    'user.department',
+    'evaluationType',
+    'period',
+    'evaluator'
+])
+
+->when(request('user_id'), function ($query) {
+    $query->where('user_id', request('user_id'));
+})
+
+->when(request('department_id'), function ($query) {
+    $query->whereHas('user', function ($q) {
+        $q->where('department_id', request('department_id'));
+    });
+})
+
+->when(request('evaluation_type_id'), function ($query) {
+    $query->where('evaluation_type_id', request('evaluation_type_id'));
+})
+
+->when(request('period_id'), function ($query) {
+    $query->where('period_id', request('period_id'));
+})
+
+->when(request('status'), function ($query) {
+    $query->where('status', request('status'));
+})
+
+->latest()
+->get();
+
+return view('reportes.index', compact(
+    'evaluaciones',
+    'evaluacionesRealizadas',
+    'promedioGeneral',
+    'documentosActivos',
+    'colaboradores',
+    'desempeñoDepartamentos',
+    'resumenMensual',
+
+    'usuarios',
+    'departamentos',
+    'tiposEvaluacion',
+    'periodos'
+));
+
 }
 
     public function generarPdf($tipo)

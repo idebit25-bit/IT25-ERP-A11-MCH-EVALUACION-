@@ -120,4 +120,18 @@ class User extends Authenticatable
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    /**
+ * Nombre completo del colaborador.
+ */
+public function getFullNameAttribute(): string
+{
+    return trim(implode(' ', array_filter([
+        $this->first_name,
+        $this->last_name,
+        $this->paternal_surname,
+        $this->maternal_surname,
+    ])));
+}
+
 }

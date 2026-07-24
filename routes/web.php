@@ -57,11 +57,37 @@ Route::get('/dashboard',
 
 /* Evaluaciones */
 
-Route::get('/evaluaciones', [EvaluationController::class, 'index']);
+Route::get('/evaluaciones', [EvaluationController::class, 'index'])
+    ->name('evaluaciones.index');
 
-Route::get('/evaluaciones/create', function () {
-    return view('evaluaciones.create');
-});
+Route::get('/evaluaciones/create', [EvaluationController::class, 'create'])
+    ->name('evaluaciones.create');
+
+Route::post('/evaluaciones', [EvaluationController::class, 'store'])
+    ->name('evaluaciones.store');
+
+Route::get('/evaluaciones/{id}/edit', [EvaluationController::class, 'edit'])
+    ->name('evaluaciones.edit');
+
+Route::put('/evaluaciones/{id}', [EvaluationController::class, 'update'])
+    ->name('evaluaciones.update');
+
+Route::get('/evaluaciones/{id}', [EvaluationController::class, 'show'])
+    ->name('evaluaciones.show');
+
+Route::delete('/evaluaciones/{id}', [EvaluationController::class, 'destroy'])
+    ->name('evaluaciones.destroy');
+
+Route::get(
+    '/evaluaciones/{id}/aplicar',
+    [EvaluationController::class, 'apply']
+)->name('evaluaciones.apply');
+
+Route::post(
+    '/evaluaciones/{id}/submit',
+    [EvaluationController::class, 'submit']
+)->name('evaluaciones.submit');
+
 
 /* Documentos */
 

@@ -95,4 +95,15 @@ class EvaluationQuestion extends Model
     {
         return $this->hasMany(EvaluationAnswer::class, 'question_id');
     }
+
+    public function templates()
+{
+    return $this->belongsToMany(
+        EvaluationTemplate::class,
+        'evaluation_template_questions',
+        'question_id',
+        'template_id'
+    );
+}
+
 }

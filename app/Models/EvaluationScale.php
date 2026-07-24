@@ -37,7 +37,10 @@ class EvaluationScale extends Model
      */
     public function values()
     {
-        return $this->hasMany(EvaluationScaleValue::class, 'scale_id');
+        return $this->hasMany(
+            EvaluationScaleValue::class,
+            'scale_id'
+        )->orderBy('display_order');
     }
 
     /**

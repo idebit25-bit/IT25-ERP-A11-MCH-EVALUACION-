@@ -212,6 +212,38 @@
 
 </div>
 
+{{-- Mensaje de éxito --}}
+@if(session('success'))
+
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+
+        {{ session('success') }}
+
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Cerrar">
+        </button>
+
+    </div>
+
+@endif
+
+@if(session('error'))
+<div class="alert alert-danger alert-dismissible fade show">
+
+    {{ session('error') }}
+
+    <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert">
+    </button>
+
+</div>
+@endif
+
 <!-- Tabla principal -->
 
 <div class="card border-0 table-card">
@@ -232,30 +264,28 @@
 
                     <tr>
 
+                        
                         <th>ID</th>
-                        <th>Código</th>
                         <th>Colaborador</th>
-                        <th>Correo</th>
-                        <th>Ingreso</th>
-                        <th>Fecha Evaluación</th>
+                        <th>Tipo</th>
+                        <th>Período</th>
+                        <th>Plantilla</th>
+                        <th>Evaluador</th>
+                        <th>Fecha</th>
                         <th>Estado</th>
+                        <th>Calificación</th>
                         <th>Acciones</th>
-
                     </tr>
 
                 </thead>
 
                 <tbody>
 
-                    @foreach($evaluations as $evaluation)
+@foreach($evaluations as $evaluation)
 
 <tr>
 
     <td>{{ $evaluation->id }}</td>
-
-    <td>
-        {{ $evaluation->user->employee_code }}
-    </td>
 
     <td>
         {{ $evaluation->user->first_name }}
@@ -263,39 +293,107 @@
     </td>
 
     <td>
-        {{ $evaluation->user->email }}
+        {{ $evaluation->evaluationType->name }}
     </td>
 
     <td>
-        {{ $evaluation->user->entry_date }}
+        {{ $evaluation->period->name }}
     </td>
 
     <td>
-        {{ $evaluation->created_at }}
+        {{ $evaluation->template->name }}
+    </td>
+
+    <td>
+        {{ $evaluation->evaluator->first_name }}
+        {{ $evaluation->evaluator->paternal_surname }}
+    </td>
+
+    <td>
+        {{ $evaluation->evaluation_date }}
     </td>
 
     <td>
 
-        <span class="badge bg-warning text-dark">
-            Pendiente
-        </span>
+        @switch($evaluation->status)
+
+            @case('draft')
+                <span class="badge bg-secondary">
+                    Borrador
+                </span>
+                @break
+
+            @case('completed')
+                <span class="badge bg-success">
+                    Completada
+                </span>
+                @break
+
+            @case('cancelled')
+                <span class="badge bg-danger">
+                    Cancelada
+                </span>
+                @break
+
+        @endswitch
 
     </td>
 
     <td>
 
-        <button class="btn btn-sm btn-outline-primary">
-            <i class="bi bi-eye"></i> Ver
+        {{ number_format($evaluation->total_score, 2) }} / 5.00
+
+    </td>
+
+<td class="d-flex gap-1">
+
+    <a
+        href="{{ route('evaluaciones.show', $evaluation->id) }}"
+        class="btn btn-sm btn-outline-primary"
+        title="Ver">
+
+        <i class="bi bi-eye"></i>
+
+    </a>
+
+    <a
+        href="{{ route('evaluaciones.edit', $evaluation->id) }}"
+        class="btn btn-sm btn-outline-warning"
+        title="Editar">
+
+        <i class="bi bi-pencil-square"></i>
+
+    </a>
+
+    <a
+    href="{{ route('evaluaciones.apply', $evaluation->id) }}"
+    class="btn btn-sm btn-outline-success"
+    title="Aplicar evaluación">
+
+    <i class="bi bi-clipboard-check"></i>
+
+</a>
+
+    <form
+        action="{{ route('evaluaciones.destroy', $evaluation->id) }}"
+        method="POST"
+        onsubmit="return confirm('¿Está seguro de eliminar esta evaluación?');">
+
+        @csrf
+        @method('DELETE')
+
+        <button
+            type="submit"
+            class="btn btn-sm btn-outline-danger"
+            title="Eliminar">
+
+            <i class="bi bi-trash"></i>
+
         </button>
 
-        <button class="btn btn-sm btn-outline-warning">
-            <i class="bi bi-pencil-square"></i> Editar
-        </button>
+    </form>
 
-        <button class="btn btn-sm btn-outline-danger">
-            <i class="bi bi-trash"></i> Eliminar    
-
-    </td>
+</td>
 
 </tr>
 
