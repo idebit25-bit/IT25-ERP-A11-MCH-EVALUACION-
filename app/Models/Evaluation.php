@@ -81,4 +81,19 @@ class Evaluation extends Model
     {
         return $this->hasMany(EvaluationAnswer::class, 'evaluation_id');
     }
+
+    /**
+ * Obtener el nombre amigable del estado.
+ */
+public function getStatusLabelAttribute(): string
+{
+    return match ($this->status) {
+        'draft' => 'Pendiente',
+        'in_progress' => 'En proceso',
+        'completed' => 'Completada',
+        'cancelled' => 'Cancelada',
+        default => ucfirst($this->status),
+    };
+}
+
 }

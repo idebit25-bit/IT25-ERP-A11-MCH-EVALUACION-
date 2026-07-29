@@ -7,6 +7,10 @@ use App\Models\User;
 use App\Models\Department;
 use App\Models\EvaluationType;
 use App\Models\EvaluationPeriod;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use App\Exports\EvaluacionesExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 
@@ -106,37 +110,7 @@ $periodos = EvaluationPeriod::where('is_active', true)
     ->get();
 
 // Evaluaciones para el historial
-$evaluaciones = Evaluation::with([
-    'user.department',
-    'evaluationType',
-    'period',
-    'evaluator'
-])
-
-->when(request('user_id'), function ($query) {
-    $query->where('user_id', request('user_id'));
-})
-
-->when(request('department_id'), function ($query) {
-    $query->whereHas('user', function ($q) {
-        $q->where('department_id', request('department_id'));
-    });
-})
-
-->when(request('evaluation_type_id'), function ($query) {
-    $query->where('evaluation_type_id', request('evaluation_type_id'));
-})
-
-->when(request('period_id'), function ($query) {
-    $query->where('period_id', request('period_id'));
-})
-
-->when(request('status'), function ($query) {
-    $query->where('status', request('status'));
-})
-
-->latest()
-->get();
+$evaluaciones = $this->obtenerEvaluaciones();
 
 return view('reportes.index', compact(
     'evaluaciones',
@@ -155,13 +129,62 @@ return view('reportes.index', compact(
 
 }
 
-    public function generarPdf($tipo)
-    {
-        return view('reportes.pdf', compact('tipo'));
-    }
+public function generarPdf(Request $request, $tipo)
+{
+    $evaluaciones = $this->obtenerEvaluaciones();
 
-    public function generarExcel($tipo)
-    {
-        return view('reportes.excel', compact('tipo'));
-    }
+    $pdf = Pdf::loadView('reportes.pdf', [
+        'evaluaciones' => $evaluaciones,
+        'tipo' => $tipo,
+        'usuario' => auth()->user(),
+    ]);
+
+    return $pdf->stream('reporte_' . $tipo . '.pdf');
+}
+
+public function generarExcel(Request $request, $tipo)
+{
+    $evaluaciones = $this->obtenerEvaluaciones();
+
+    return Excel::download(
+        new EvaluacionesExport($evaluaciones),
+        'reporte_' . $tipo . '.xlsx'
+    );
+}
+
+private function obtenerEvaluaciones()
+{
+    return Evaluation::with([
+        'user.department',
+        'evaluationType',
+        'period',
+        'evaluator'
+    ])
+
+    ->when(request('user_id'), function ($query) {
+        $query->where('user_id', request('user_id'));
+    })
+
+    ->when(request('department_id'), function ($query) {
+        $query->whereHas('user', function ($q) {
+            $q->where('department_id', request('department_id'));
+        });
+    })
+
+    ->when(request('evaluation_type_id'), function ($query) {
+        $query->where('evaluation_type_id', request('evaluation_type_id'));
+    })
+
+    ->when(request('period_id'), function ($query) {
+        $query->where('period_id', request('period_id'));
+    })
+
+    ->when(request('status'), function ($query) {
+        $query->where('status', request('status'));
+    })
+
+    ->latest()
+    ->get();
+}
+
 }

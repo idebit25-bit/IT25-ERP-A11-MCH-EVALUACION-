@@ -44,7 +44,7 @@
                     </span>
 
                     <h2>
-                        15
+                        {{ $totalManuales }}
                     </h2>
 
                 </div>
@@ -64,7 +64,7 @@
                     </span>
 
                     <h2>
-                        13
+                       {{ $manualesVigentes }}
                     </h2>
 
                 </div>
@@ -84,7 +84,7 @@
                     </span>
 
                     <h2>
-                        2
+                        {{ $proximosVencer }}
                     </h2>
 
                 </div>
@@ -223,106 +223,99 @@
 
                     </thead>
 
-                    <tbody>
+<tbody>
 
-                        <tr>
+@forelse ($manuales as $manual)
 
-                            <td>MAN-001</td>
+<tr>
 
-                            <td>Manual ERP Capital Humano</td>
+    <td>{{ $manual->code }}</td>
 
-                            <td>1.0</td>
+    <td>{{ $manual->name }}</td>
 
-                            <td>31/12/2026</td>
+    <td>{{ $manual->version }}</td>
 
-                            <td>28/05/2026</td>
+    <td>
+        {{ \Carbon\Carbon::parse($manual->expiration_date)->format('d/m/Y') }}
+    </td>
 
-                            <td>
+    <td>
+        {{ $manual->created_at->format('d/m/Y') }}
+    </td>
 
-                                <span class="badge bg-success">
-                                    Vigente
-                                </span>
+    <td>
 
-                            </td>
+        @if ($manual->status == 'Vigente')
 
-                            <td>
+            <span class="badge bg-success">
+                {{ $manual->status }}
+            </span>
 
-    <a
-        href="/documentos/MAN-001"
-        class="btn btn-sm btn-outline-primary"
-    >
-        <i class="bi bi-eye"></i>
-    </a>
+        @elseif ($manual->status == 'Vencido')
 
-    <a
-        href="/documentos/MAN-001/edit"
-        class="btn btn-sm btn-outline-warning"
-    >
-        <i class="bi bi-pencil-square"></i>
-    </a>
+            <span class="badge bg-danger">
+                {{ $manual->status }}
+            </span>
 
-    <button
-        class="btn btn-sm btn-outline-danger"
-        data-bs-toggle="modal"
-        data-bs-target="#deleteModal"
-        data-documento="Manual ERP Capital Humano"
-    >
-        <i class="bi bi-trash"></i>
-    </button>
+        @elseif ($manual->status == 'Actualizado')
 
-</td>
-                        </tr>
+            <span class="badge bg-warning text-dark">
+                {{ $manual->status }}
+            </span>
 
-                        <tr>
+        @else
 
-                            <td>MAN-002</td>
+            <span class="badge bg-secondary">
+                {{ $manual->status }}
+            </span>
 
-                            <td>Manual de Evaluaciones</td>
+        @endif
 
-                            <td>1.2</td>
+    </td>
 
-                            <td>31/12/2026</td>
+    <td>
 
-                            <td>30/05/2026</td>
+        <a
+            href="{{ url('/documentos/' . $manual->id) }}"
+            class="btn btn-sm btn-outline-primary"
+        >
+            <i class="bi bi-eye"></i>
+        </a>
 
-                            <td>
+        <a
+            href="{{ url('/documentos/' . $manual->id . '/edit') }}"
+            class="btn btn-sm btn-outline-warning"
+        >
+            <i class="bi bi-pencil-square"></i>
+        </a>
 
-                                <span class="badge bg-success">
-                                    Vigente
-                                </span>
+        <button
+            class="btn btn-sm btn-outline-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteModal"
+            data-id="{{ $manual->id }}"
+            data-documento="{{ $manual->name }}"
+        >
+            <i class="bi bi-trash"></i>
+        </button>
 
-                            </td>
+    </td>
 
-                            <td>
+</tr>
 
-    <a
-        href="/documentos/MAN-002"
-        class="btn btn-sm btn-outline-primary"
-    >
-        <i class="bi bi-eye"></i>
-    </a>
+@empty
 
-    <a
-        href="/documentos/MAN-002/edit"
-        class="btn btn-sm btn-outline-warning"
-    >
-        <i class="bi bi-pencil-square"></i>
-    </a>
+<tr>
 
-    <button
-        class="btn btn-sm btn-outline-danger"
-        data-bs-toggle="modal"
-        data-bs-target="#deleteModal"
-        data-documento="Manual de Evaluaciones"
-    >
-        <i class="bi bi-trash"></i>
-    </button>
+    <td colspan="7" class="text-center text-muted">
+        No hay manuales registrados.
+    </td>
 
-</td>
+</tr>
 
-                        </tr>
+@endforelse
 
-                    </tbody>
+</tbody>
 
                 </table>
 
@@ -334,69 +327,9 @@
 
 </div>
 
-<!-- Modal eliminar -->
+<!-- Modal eliminar documento -->
 
-<div
-    class="modal fade"
-    id="deleteModal"
-    tabindex="-1"
-    aria-hidden="true"
->
-
-    <div class="modal-dialog">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5 class="modal-title">
-                    Confirmar eliminación
-                </h5>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                ></button>
-
-            </div>
-
-            <div class="modal-body">
-
-                ¿Desea eliminar el documento:
-
-                <strong id="documentoNombre"></strong>?
-
-                <br><br>
-
-                Esta acción no se puede deshacer.
-
-            </div>
-
-            <div class="modal-footer">
-
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                >
-                    Cancelar
-                </button>
-
-                <button
-                    type="button"
-                    class="btn btn-danger"
-                >
-                    Eliminar
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
+@include('documentos.partials.delete-modal')
 
 @include('documentos.partials.upload-modal')
 

@@ -29,7 +29,13 @@
 
             <div class="modal-body">
 
-                <form>
+                <form
+    action="{{ url('/documentos') }}"
+    method="POST"
+    enctype="multipart/form-data"
+>
+
+    @csrf
 
                     <div class="mb-3">
 
@@ -38,10 +44,12 @@
                         </label>
 
                         <input
-                            type="text"
-                            class="form-control"
-                            placeholder="Ingrese el nombre"
-                        >
+    type="text"
+    name="name"
+    class="form-control"
+    placeholder="Ingrese el nombre"
+    required
+>
 
                     </div>
 
@@ -53,10 +61,11 @@
                                 Tipo
                             </label>
 
-                            <select
-                                id="tipoDocumento"
-                                class="form-select"
-                            >
+<select
+    name="type"
+    class="form-select"
+    required
+>
 
                                 <option value="">
                                     Seleccione
@@ -88,11 +97,14 @@
                                 Versión
                             </label>
 
-                            <input
-                                type="text"
-                                class="form-control"
-                                placeholder="1.0"
-                            >
+<input
+    type="text"
+    name="version"
+    class="form-control"
+    placeholder="1.0"
+    value="1.0"
+    required
+>
 
                         </div>
 
@@ -104,10 +116,11 @@
                             Vigencia
                         </label>
 
-                        <input
-                            type="date"
-                            class="form-control"
-                        >
+<input
+    type="date"
+    name="expiration_date"
+    class="form-control"
+>
 
                     </div>
 
@@ -117,15 +130,14 @@
                             PDF
                         </label>
 
-                        <input
-                            type="file"
-                            class="form-control"
-                            accept=".pdf"
-                        >
+<input
+    type="file"
+    name="document"
+    class="form-control"
+    accept=".pdf"
+>
 
                     </div>
-
-                </form>
 
             </div>
 
@@ -141,16 +153,16 @@
 
                 </button>
 
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                >
-
-                    Guardar
-
-                </button>
+<button
+    type="submit"
+    class="btn btn-primary"
+>
+    Guardar
+</button>
 
             </div>
+
+             </form>
 
         </div>
 

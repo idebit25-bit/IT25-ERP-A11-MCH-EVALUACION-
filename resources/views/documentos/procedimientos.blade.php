@@ -43,7 +43,7 @@
                     </span>
 
                     <h2>
-                        11
+                        {{ $totalProcedimientos }}
                     </h2>
 
                 </div>
@@ -63,7 +63,7 @@
                     </span>
 
                     <h2>
-                        10
+                        {{ $procedimientosVigentes }}
                     </h2>
 
                 </div>
@@ -79,11 +79,11 @@
                 <div class="card-body">
 
                     <span class="stats-label">
-                        En revisión
+                        Proximo a Vencer
                     </span>
 
                     <h2>
-                        1
+                        {{ $proximosVencer }}
                     </h2>
 
                 </div>
@@ -222,107 +222,99 @@
 
                     </thead>
 
-                    <tbody>
+<tbody>
 
-                        <tr>
+@forelse ($procedimientos as $procedimiento)
 
-                            <td>PRO-001</td>
+<tr>
 
-                            <td>Procedimiento de Reclutamiento</td>
+    <td>{{ $procedimiento->code }}</td>
 
-                            <td>1.0</td>
+    <td>{{ $procedimiento->name }}</td>
 
-                            <td>31/12/2026</td>
+    <td>{{ $procedimiento->version }}</td>
 
-                            <td>28/05/2026</td>
+    <td>
+        {{ \Carbon\Carbon::parse($procedimiento->expiration_date)->format('d/m/Y') }}
+    </td>
 
-                            <td>
+    <td>
+        {{ $procedimiento->created_at->format('d/m/Y') }}
+    </td>
 
-                                <span class="badge bg-success">
-                                    Vigente
-                                </span>
+    <td>
 
-                            </td>
+        @if ($procedimiento->status == 'Vigente')
 
-                           <td>
+            <span class="badge bg-success">
+                {{ $procedimiento->status }}
+            </span>
 
-    <a
-        href="/documentos/POL-001"
-        class="btn btn-sm btn-outline-primary"
-    >
-        <i class="bi bi-eye"></i>
-    </a>
+        @elseif ($procedimiento->status == 'Vencido')
 
-    <a
-        href="/documentos/POL-001/edit"
-        class="btn btn-sm btn-outline-warning"
-    >
-        <i class="bi bi-pencil-square"></i>
-    </a>
+            <span class="badge bg-danger">
+                {{ $procedimiento->status }}
+            </span>
 
-    <button
-        class="btn btn-sm btn-outline-danger"
-        data-bs-toggle="modal"
-        data-bs-target="#deleteModal"
-        data-documento="Política de Asistencia"
-    >
-        <i class="bi bi-trash"></i>
-    </button>
+        @elseif ($procedimiento->status == 'Actualizado')
 
-</td>
+            <span class="badge bg-warning text-dark">
+                {{ $procedimiento->status }}
+            </span>
 
-                        </tr>
+        @else
 
-                        <tr>
+            <span class="badge bg-secondary">
+                {{ $procedimiento->status }}
+            </span>
 
-                            <td>PRO-002</td>
+        @endif
 
-                            <td>Procedimiento de Evaluación de Desempeño</td>
+    </td>
 
-                            <td>1.4</td>
+    <td>
 
-                            <td>31/12/2026</td>
+        <a
+            href="{{ url('/documentos/' . $procedimiento->id) }}"
+            class="btn btn-sm btn-outline-primary"
+        >
+            <i class="bi bi-eye"></i>
+        </a>
 
-                            <td>30/05/2026</td>
+        <a
+            href="{{ url('/documentos/' . $procedimiento->id . '/edit') }}"
+            class="btn btn-sm btn-outline-warning"
+        >
+            <i class="bi bi-pencil-square"></i>
+        </a>
 
-                            <td>
+        <button
+            class="btn btn-sm btn-outline-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteModal"
+            data-id="{{ $procedimiento->id }}"
+            data-documento="{{ $procedimiento->name }}"
+        >
+            <i class="bi bi-trash"></i>
+        </button>
 
-                                <span class="badge bg-success">
-                                    Vigente
-                                </span>
+    </td>
 
-                            </td>
+</tr>
 
-                           <td>
+@empty
 
-    <a
-        href="/documentos/POL-002"
-        class="btn btn-sm btn-outline-primary"
-    >
-        <i class="bi bi-eye"></i>
-    </a>
+<tr>
 
-    <a
-        href="/documentos/POL-002/edit"
-        class="btn btn-sm btn-outline-warning"
-    >
-        <i class="bi bi-pencil-square"></i>
-    </a>
+    <td colspan="7" class="text-center text-muted">
+        No hay procedimientos registrados.
+    </td>
 
-    <button
-        class="btn btn-sm btn-outline-danger"
-        data-bs-toggle="modal"
-        data-bs-target="#deleteModal"
-        data-documento="Política de Vacaciones"
-    >
-        <i class="bi bi-trash"></i>
-    </button>
+</tr>
 
-</td>
+@endforelse
 
-                        </tr>
-
-                    </tbody>
+</tbody>
 
                 </table>
 
@@ -336,67 +328,7 @@
 
 <!-- Modal eliminar -->
 
-<div
-    class="modal fade"
-    id="deleteModal"
-    tabindex="-1"
-    aria-hidden="true"
->
-
-    <div class="modal-dialog">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5 class="modal-title">
-                    Confirmar eliminación
-                </h5>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                ></button>
-
-            </div>
-
-            <div class="modal-body">
-
-                ¿Desea eliminar el documento:
-
-                <strong id="documentoNombre"></strong>?
-
-                <br><br>
-
-                Esta acción no se puede deshacer.
-
-            </div>
-
-            <div class="modal-footer">
-
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                >
-                    Cancelar
-                </button>
-
-                <button
-                    type="button"
-                    class="btn btn-danger"
-                >
-                    Eliminar
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
+@include('documentos.partials.delete-modal')
 
 @include('documentos.partials.upload-modal')
 

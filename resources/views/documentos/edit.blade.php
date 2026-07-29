@@ -20,7 +20,13 @@
 
         <div class="card-body">
 
-            <form>
+<form
+    action="{{ url('/documentos/' . $documento->id) }}"
+    method="POST"
+    enctype="multipart/form-data">
+
+    @csrf
+    @method('PUT')
 
                 <div class="mb-3">
 
@@ -31,7 +37,7 @@
                     <input
                         type="text"
                         class="form-control"
-                        value="{{ $documento['id'] }}"
+                        value="{{ $documento->code }}"
                         readonly
                     >
 
@@ -44,11 +50,12 @@
                     </label>
 
                     <input
-                        type="text"
-                        class="form-control"
-                        value="{{ $documento['nombre'] }}"
-                    >
-
+    type="text"
+    name="name"
+    class="form-control"
+    value="{{ $documento->name }}"
+>
+                    
                 </div>
 
                 <div class="mb-3">
@@ -57,23 +64,26 @@
                         Tipo
                     </label>
 
-                    <select class="form-select">
+                    <select
+                    
+                    name="type"
+                    class="form-select"
+                >
+<option value="Manual" {{ $documento->type == 'Manual' ? 'selected' : '' }}>
+    Manual
+</option>
 
-                        <option {{ $documento['tipo'] == 'Manual' ? 'selected' : '' }}>
-                            Manual
-                        </option>
+<option value="Formato" {{ $documento->type == 'Formato' ? 'selected' : '' }}>
+    Formato
+</option>
 
-                        <option {{ $documento['tipo'] == 'Formato' ? 'selected' : '' }}>
-                            Formato
-                        </option>
+<option value="Política" {{ $documento->type == 'Política' ? 'selected' : '' }}>
+    Política
+</option>
 
-                        <option {{ $documento['tipo'] == 'Política' ? 'selected' : '' }}>
-                            Política
-                        </option>
-
-                        <option {{ $documento['tipo'] == 'Procedimiento' ? 'selected' : '' }}>
-                            Procedimiento
-                        </option>
+<option value="Procedimiento" {{ $documento->type == 'Procedimiento' ? 'selected' : '' }}>
+    Procedimiento
+</option>
 
                     </select>
 
@@ -87,11 +97,12 @@
                             Versión
                         </label>
 
-                        <input
-                            type="text"
-                            class="form-control"
-                            value="{{ $documento['version'] }}"
-                        >
+<input
+    type="text"
+    name="version"
+    class="form-control"
+    value="{{ $documento->version }}"
+>
 
                     </div>
 
@@ -101,11 +112,12 @@
                             Vigencia
                         </label>
 
-                        <input
-                            type="text"
-                            class="form-control"
-                            value="{{ $documento['vigencia'] }}"
-                        >
+                       <input
+    type="date"
+    name="expiration_date"
+    class="form-control"
+    value="{{ \Carbon\Carbon::parse($documento->expiration_date)->format('Y-m-d') }}"
+>
 
                     </div>
 
@@ -117,30 +129,53 @@
                         Estado
                     </label>
 
-                    <select class="form-select">
+                    <select
+    name="status"
+    class="form-select"
+>
 
-                        <option {{ $documento['estado'] == 'Vigente' ? 'selected' : '' }}>
-                            Vigente
-                        </option>
 
-                        <option {{ $documento['estado'] == 'Actualizado' ? 'selected' : '' }}>
-                            Actualizado
-                        </option>
+<option value="Vigente" {{ $documento->status == 'Vigente' ? 'selected' : '' }}>
+    Vigente
+</option>
 
-                        <option {{ $documento['estado'] == 'Vencido' ? 'selected' : '' }}>
-                            Vencido
-                        </option>
+<option value="Actualizado" {{ $documento->status == 'Actualizado' ? 'selected' : '' }}>
+    Actualizado
+</option>
+
+<option value="Vencido" {{ $documento->status == 'Vencido' ? 'selected' : '' }}>
+    Vencido
+</option>
 
                     </select>
 
                 </div>
+
+                <div class="mb-4">
+
+    <label class="form-label">
+        Archivo PDF
+    </label>
+
+    <input
+        type="file"
+        name="document"
+        class="form-control"
+        accept="application/pdf"
+    >
+
+    <small class="text-muted">
+        Si no selecciona un archivo, se conservará el PDF actual.
+    </small>
+
+</div>
 
                 <div class="d-flex gap-2">
 
                                
 
                     <button
-                        type="button"
+                        type="submit"
                         class="btn btn-primary"
                     >
 
@@ -150,11 +185,10 @@
 
                     </button>
 
-                    <a
-    href="{{ $documento['pdf'] }}"
+<a
+    href="{{ asset('storage/' . $documento->file_path) }}"
     target="_blank"
-    class="btn btn-outline-primary"
->
+    class="btn btn-outline-primary">
 
     <i class="bi bi-file-earmark-pdf"></i>
 
@@ -163,10 +197,9 @@
 </a>
 
 <a
-    href="{{ $documento['pdf'] }}"
+    href="{{ asset('storage/' . $documento->file_path) }}"
     download
-    class="btn btn-outline-danger"
->
+    class="btn btn-outline-danger">
 
     <i class="bi bi-download"></i>
 

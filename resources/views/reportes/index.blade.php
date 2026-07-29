@@ -752,87 +752,85 @@
 
                 <div class="modal-body">
 
-                    <form id="formGenerarReporte">
+ <form id="formGenerarReporte">
 
-                        <!-- Tipo -->
+    @csrf
 
-                        <div class="mb-3">
+    <!-- Tipo -->
 
-                            <label class="form-label">
+    <div class="mb-3">
 
-                                Tipo de reporte
+        <label class="form-label">
+            Tipo de reporte
+        </label>
 
-                            </label>
+        <select
+            class="form-select"
+            id="tipoReporte"
+            name="tipo">
 
-                            <select
-                                class="form-select"
-                                id="tipoReporte">
+            <option value="evaluaciones">
+                Evaluaciones
+            </option>
 
-                                <option value="evaluaciones">
-                                    Evaluaciones
-                                </option>
+            <option value="colaboradores">
+                Colaboradores
+            </option>
 
-                                <option value="colaboradores">
-                                    Colaboradores
-                                </option>
+            <option value="documentos">
+                Documentos
+            </option>
 
-                                <option value="documentos">
-                                    Documentos
-                                </option>
+            <option value="general">
+                General RH
+            </option>
 
-                                <option value="general">
-                                    General RH
-                                </option>
+        </select>
 
-                            </select>
+    </div>
 
-                        </div>
+    <!-- Periodo -->
 
-                        <!-- Periodo -->
+    <div class="mb-3">
 
-                        <div class="mb-3">
+        <label class="form-label">
+            Periodo
+        </label>
 
-                            <label class="form-label">
+        <input
+            type="month"
+            class="form-control"
+            id="periodo"
+            name="periodo">
 
-                                Periodo
+    </div>
 
-                            </label>
+    <!-- Formato -->
 
-                            <input
-                                type="month"
-                                class="form-control"
-                                id="periodo">
+    <div class="mb-3">
 
-                        </div>
+        <label class="form-label">
+            Formato
+        </label>
 
-                        <!-- Formato -->
+        <select
+            class="form-select"
+            id="formatoReporte"
+            name="formato">
 
-                        <div class="mb-3">
+            <option value="pdf">
+                PDF
+            </option>
 
-                            <label class="form-label">
+            <option value="excel">
+                Excel
+            </option>
 
-                                Formato
+        </select>
 
-                            </label>
+    </div>
 
-                            <select
-                                class="form-select"
-                                id="formatoReporte">
-
-                                <option value="pdf">
-                                    PDF
-                                </option>
-
-                                <option value="excel">
-                                    Excel
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                    </form>
-
+</form>
                 </div>
 
                 <div class="modal-footer">

@@ -21,10 +21,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const periodo =
                 document.getElementById('periodo').value;
 
-            const url =
-                `/reportes/${tipo}/${formato}?periodo=${periodo}`;
+let url = '';
 
-            window.open(url, '_blank');
+if (formato === 'pdf') {
+
+    url = `/reportes/pdf/${tipo}`;
+
+} else {
+
+    url = `/reportes/excel/${tipo}`;
+
+}
+
+if (periodo) {
+
+    url += `?periodo=${encodeURIComponent(periodo)}`;
+
+}
+
+window.open(url, '_blank');
 
         });
 
@@ -664,10 +679,10 @@ if (btnPdf) {
 
         console.log(tipo);
 
-        window.open(
-            `/reportes/${tipo.toLowerCase()}/pdf`,
-            '_blank'
-        );
+window.open(
+    `/reportes/pdf/${tipo.toLowerCase()}`,
+    '_blank'
+);
 
     });
 
@@ -687,10 +702,10 @@ if (btnExcel) {
         const tipo =
             btnExcel.dataset.tipo;
 
-        window.open(
-            `/reportes/${tipo.toLowerCase()}/excel`,
-            '_blank'
-        );
+window.open(
+    `/reportes/excel/${tipo.toLowerCase()}`,
+    '_blank'
+);
 
     });
 

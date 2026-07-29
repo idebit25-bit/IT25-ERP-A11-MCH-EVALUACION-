@@ -93,26 +93,37 @@ Route::post(
 
 Route::get('/documentos', [DocumentoController::class, 'index']);
 
-Route::get('/documentos/manuales', function () {
-    return view('documentos.manuales');
-});
+// Crear documento
+Route::get('/documentos/create', [DocumentoController::class, 'create']);
+Route::post('/documentos', [DocumentoController::class, 'store']);
 
-Route::get('/documentos/formatos', function () {
-    return view('documentos.formatos');
-});
+Route::get(
+    '/documentos/manuales',
+    [DocumentoController::class, 'manuales']
+);
 
-Route::get('/documentos/politicas', function () {
-    return view('documentos.politicas');
-});
+Route::get(
+    '/documentos/formatos',
+    [DocumentoController::class, 'formatos']
+);
 
-Route::get('/documentos/procedimientos', function () {
-    return view('documentos.procedimientos');
-});
+Route::get(
+    '/documentos/politicas',
+    [DocumentoController::class, 'politicas']
+);
 
-Route::get('/documentos/{id}/edit' ,
-[DocumentoController::class, 'edit']);
+Route::get(
+    '/documentos/procedimientos',
+    [DocumentoController::class, 'procedimientos']
+);
+
+Route::get('/documentos/{id}/edit', [DocumentoController::class, 'edit']);
+
+// Actualizar documento
+Route::put('/documentos/{id}', [DocumentoController::class, 'update']);
 
 Route::get('/documentos/{id}', [DocumentoController::class, 'show']);
+Route::delete('/documentos/{id}', [DocumentoController::class, 'destroy']);
 
 
 /* Configuracion */
@@ -451,39 +462,11 @@ Route::get('/colaboradores/{id}', [ColaboradorController::class, 'show'])
 Route::get('/reportes', [ReportesController::class, 'index'])
 ->name('reportes.index');
 
+Route::get('/reportes/pdf/{tipo}', [ReportesController::class, 'generarPdf'])
+    ->name('reportes.pdf');
 
-Route::get('/reportes/evaluaciones/pdf', function () {
-    return 'PDF de Evaluaciones';
-});
-
-Route::get('/reportes/evaluaciones/excel', function () {
-    return 'Excel de Evaluaciones';
-});
-
-Route::get('/reportes/colaboradores/pdf', function () {
-    return 'PDF de Colaboradores';
-});
-
-Route::get('/reportes/colaboradores/excel', function () {
-    return 'Excel de Colaboradores';
-});
-
-Route::get('/reportes/documentos/pdf', function () {
-    return 'PDF de Documentos';
-});
-
-Route::get('/reportes/documentos/excel', function () {
-    return 'Excel de Documentos';
-});
-
-Route::get('/reportes/general/pdf', function () {
-    return 'PDF General RH';
-});
-
-Route::get('/reportes/general/excel', function () {
-    return 'Excel General RH';
-});
-
+Route::get('/reportes/excel/{tipo}', [ReportesController::class, 'generarExcel'])
+    ->name('reportes.excel');
 
 
 });

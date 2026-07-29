@@ -57,7 +57,7 @@
                 </span>
 
                 <h2>
-                    15
+                    {{ $totalManuales }}
                 </h2>
 
             </div>
@@ -101,7 +101,7 @@
                 </span>
 
                 <h2>
-                    22
+                    {{ $totalFormatos }}
                 </h2>
 
             </div>
@@ -145,7 +145,7 @@
                 </span>
 
                 <h2>
-                    8
+                    {{ $totalPoliticas }}
                 </h2>
 
             </div>
@@ -189,7 +189,7 @@
                 </span>
 
                 <h2>
-                    11
+                    {{ $totalProcedimientos }}
                 </h2>
 
             </div>
@@ -405,85 +405,95 @@
 
                 </thead>
 
-                <tbody>
+<tbody>
 
-@foreach($documentos as $documento)
+@forelse($documentos as $documento)
 
 <tr>
 
-    <td>{{ $documento['id'] }}</td>
+    <td>{{ $documento->code }}</td>
 
-    <td>{{ $documento['nombre'] }}</td>
+    <td>{{ $documento->name }}</td>
 
-    <td>{{ $documento['tipo'] }}</td>
+    <td>{{ $documento->type }}</td>
 
-    <td>{{ $documento['version'] }}</td>
+    <td>{{ $documento->version }}</td>
 
-    <td>{{ $documento['vigencia'] }}</td>
+    <td>{{ \Carbon\Carbon::parse($documento->expiration_date)->format('d/m/Y') }}</td>
 
-    <td>{{ $documento['fecha'] }}</td>
+    <td>{{ $documento->created_at?->format('d/m/Y') }}</td>
 
     <td>
 
-       @if($documento['estado'] == 'Vigente')
+        @if($documento->status == 'Vigente')
 
-    <span class="badge bg-success">
-        Vigente
-    </span>
+            <span class="badge bg-success">
+                Vigente
+            </span>
 
-@elseif($documento['estado'] == 'Actualizado')
+        @elseif($documento->status == 'Actualizado')
 
-    <span class="badge bg-primary">
-        Actualizado
-    </span>
+            <span class="badge bg-primary">
+                Actualizado
+            </span>
 
-@elseif($documento['estado'] == 'Vencido')
+        @elseif($documento->status == 'Vencido')
 
-    <span class="badge bg-danger">
-        Vencido
-    </span>
+            <span class="badge bg-danger">
+                Vencido
+            </span>
 
-@else
+        @else
 
-    <span class="badge bg-secondary">
-        {{ $documento['estado'] }}
-    </span>
+            <span class="badge bg-secondary">
+                {{ $documento->status }}
+            </span>
 
-@endif
+        @endif
 
     </td>
 
     <td>
-        
 
         <a
-    href="/documentos/{{ $documento['id'] }}"
-    class="btn btn-sm btn-outline-primary"
->
-    <i class="bi bi-eye"></i>
+            href="/documentos/{{ $documento->id }}"
+            class="btn btn-sm btn-outline-primary"
+        >
+            <i class="bi bi-eye"></i>
         </a>
 
         <a
-    href="/documentos/{{ $documento['id'] }}/edit"
-    class="btn btn-sm btn-outline-warning"
->
-    <i class="bi bi-pencil-square"></i>
-       </a>
+            href="/documentos/{{ $documento->id }}/edit"
+            class="btn btn-sm btn-outline-warning"
+        >
+            <i class="bi bi-pencil-square"></i>
+        </a>
 
         <button
-    class="btn btn-sm btn-outline-danger"
-    data-bs-toggle="modal"
-    data-bs-target="#deleteModal"
-    data-documento="{{ $documento['nombre'] }}"
->
-    <i class="bi bi-trash"></i>
-</button>
+            class="btn btn-sm btn-outline-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteModal"
+            data-documento="{{ $documento->name }}"
+            data-id="{{ $documento->id }}"
+        >
+            <i class="bi bi-trash"></i>
+        </button>
 
     </td>
 
 </tr>
 
-@endforeach
+@empty
+
+<tr>
+
+    <td colspan="8" class="text-center text-muted py-4">
+        No hay documentos registrados.
+    </td>
+
+</tr>
+
+@endforelse
 
 </tbody>
 
@@ -499,67 +509,7 @@
 
 <!-- Modal eliminar documento -->
 
-<div
-    class="modal fade"
-    id="deleteModal"
-    tabindex="-1"
-    aria-hidden="true"
->
-
-    <div class="modal-dialog">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5 class="modal-title">
-                    Confirmar eliminación
-                </h5>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                ></button>
-
-            </div>
-
-            <div class="modal-body">
-
-                ¿Desea eliminar el documento:
-
-                <strong id="documentoNombre"></strong>?
-
-                <br><br>
-
-                Esta acción no se puede deshacer.
-
-            </div>
-
-            <div class="modal-footer">
-
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                >
-                    Cancelar
-                </button>
-
-                <button
-                    type="button"
-                    class="btn btn-danger"
-                >
-                    Eliminar
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
+ @include('documentos.partials.delete-modal')
 
 @include('documentos.partials.upload-modal')
 

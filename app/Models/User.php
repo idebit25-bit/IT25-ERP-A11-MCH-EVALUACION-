@@ -6,6 +6,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -121,6 +122,14 @@ class User extends Authenticatable
         return $this->belongsTo(User::class, 'created_by');
     }
 
+        /**
+     * Documentos registrados por el usuario.
+     */
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class, 'created_by');
+    }
+
     /**
  * Nombre completo del colaborador.
  */
@@ -133,5 +142,8 @@ public function getFullNameAttribute(): string
         $this->maternal_surname,
     ])));
 }
+
+
+
 
 }

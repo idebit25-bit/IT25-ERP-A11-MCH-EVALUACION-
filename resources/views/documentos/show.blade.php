@@ -9,7 +9,7 @@
     <div class="dashboard-header">
 
         <h1>
-            {{ $documento['nombre'] }}
+            {{ $documento->name }}
         </h1>
 
         <p>
@@ -28,135 +28,142 @@
 
         </div>
 
-        <div class="card-body">
+<div class="card-body">
 
-            <div class="row mb-3">
+    <div class="row mb-3">
 
-                <div class="col-md-3">
-                    <strong>ID</strong>
-                </div>
+        <div class="col-md-3">
+            <strong>ID</strong>
+        </div>
 
-                <div class="col-md-9">
-                    {{ $documento['id'] }}
-                </div>
+        <div class="col-md-9">
+            {{ $documento->code }}
+        </div>
 
-            </div>
+    </div>
 
-            <div class="row mb-3">
+    <div class="row mb-3">
 
-                <div class="col-md-3">
-                    <strong>Documento</strong>
-                </div>
+        <div class="col-md-3">
+            <strong>Documento</strong>
+        </div>
 
-                <div class="col-md-9">
-                    {{ $documento['nombre'] }}
-                </div>
+        <div class="col-md-9">
+            {{ $documento->name }}
+        </div>
 
-            </div>
+    </div>
 
-            <div class="row mb-3">
+    <div class="row mb-3">
 
-                <div class="col-md-3">
-                    <strong>Tipo</strong>
-                </div>
+        <div class="col-md-3">
+            <strong>Tipo</strong>
+        </div>
 
-                <div class="col-md-9">
-                    {{ $documento['tipo'] }}
-                </div>
+        <div class="col-md-9">
+            {{ $documento->type }}
+        </div>
 
-            </div>
+    </div>
 
-            <div class="row mb-3">
+    <div class="row mb-3">
 
-                <div class="col-md-3">
-                    <strong>Versión</strong>
-                </div>
+        <div class="col-md-3">
+            <strong>Versión</strong>
+        </div>
 
-                <div class="col-md-9">
-                    {{ $documento['version'] }}
-                </div>
+        <div class="col-md-9">
+            {{ $documento->version }}
+        </div>
 
-            </div>
+    </div>
 
-            <div class="row mb-3">
+    <div class="row mb-3">
 
-                <div class="col-md-3">
-                    <strong>Vigencia</strong>
-                </div>
+        <div class="col-md-3">
+            <strong>Vigencia</strong>
+        </div>
 
-                <div class="col-md-9">
-                    {{ $documento['vigencia'] }}
-                </div>
+        <div class="col-md-9">
+            {{ \Carbon\Carbon::parse($documento->expiration_date)->format('d/m/Y') }}
+        </div>
 
-            </div>
+    </div>
 
-            <div class="row mb-3">
+    <div class="row mb-3">
 
-                <div class="col-md-3">
-                    <strong>Fecha</strong>
-                </div>
+        <div class="col-md-3">
+            <strong>Fecha</strong>
+        </div>
 
-                <div class="col-md-9">
-                    {{ $documento['fecha'] }}
-                </div>
+        <div class="col-md-9">
+            {{ $documento->created_at->format('d/m/Y') }}
+        </div>
 
-            </div>
+    </div>
 
-            <div class="row mb-4">
+    <div class="row mb-4">
 
-                <div class="col-md-3">
-                    <strong>Estado</strong>
-                </div>
+        <div class="col-md-3">
+            <strong>Estado</strong>
+        </div>
 
-                <div class="col-md-9">
+        <div class="col-md-9">
 
-                    @if($documento['estado'] == 'Vigente')
+            @if($documento->status == 'Vigente')
 
-                        <span class="badge bg-success">
-                            Vigente
-                        </span>
+                <span class="badge bg-success">
+                    Vigente
+                </span>
 
-                    @elseif($documento['estado'] == 'Actualizado')
+            @elseif($documento->status == 'Actualizado')
 
-                        <span class="badge bg-primary">
-                            Actualizado
-                        </span>
+                <span class="badge bg-primary">
+                    Actualizado
+                </span>
 
-                    @elseif($documento['estado'] == 'Vencido')
+            @elseif($documento->status == 'Vencido')
 
-                        <span class="badge bg-danger">
-                            Vencido
-                        </span>
+                <span class="badge bg-danger">
+                    Vencido
+                </span>
 
-                    @else
+            @else
 
-                        <span class="badge bg-secondary">
-                            {{ $documento['estado'] }}
-                        </span>
+                <span class="badge bg-secondary">
+                    {{ $documento->status }}
+                </span>
 
-                    @endif
+            @endif
 
-                </div>
+        </div>
 
-            </div>
+    </div>
 
             <div class="d-flex gap-2">
 
-                @php
+ @php
 
-    $rutaRegreso = '/documentos';
+$rutaRegreso = '/documentos';
 
-    if(str_starts_with($documento['id'], 'MAN'))
+switch ($documento->type) {
+
+    case 'Manual':
         $rutaRegreso = '/documentos/manuales';
+        break;
 
-    elseif(str_starts_with($documento['id'], 'FOR'))
+    case 'Formato':
         $rutaRegreso = '/documentos/formatos';
+        break;
 
-    elseif(str_starts_with($documento['id'], 'POL'))
+    case 'Política':
         $rutaRegreso = '/documentos/politicas';
+        break;
 
-    elseif(str_starts_with($documento['id'], 'PROC'))
+    case 'Procedimiento':
         $rutaRegreso = '/documentos/procedimientos';
+        break;
+}
 
 @endphp
 
@@ -178,7 +185,7 @@
                 </a>
 
 <a
-    href="{{ $documento['pdf'] }}"
+    href="{{ asset('storage/' . $documento->file_path) }}"
     target="_blank"
     class="btn btn-outline-primary">
 
@@ -189,7 +196,7 @@
 </a>
 
 <a
-    href="{{ $documento['pdf'] }}"
+    href="{{ asset('storage/' . $documento->file_path) }}"
     download
     class="btn btn-outline-danger">
 

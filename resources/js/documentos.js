@@ -6,9 +6,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         deleteModal.addEventListener('show.bs.modal', function (event) {
 
+        
             const button = event.relatedTarget;
 
+            const id = button.getAttribute('data-id');
             const nombre = button.getAttribute('data-documento');
+
+            document.getElementById('deleteForm').action = `/documentos/${id}`;
 
             document.getElementById('documentoNombre').textContent = nombre;
 
@@ -36,8 +40,6 @@ if (uploadModal) {
     });
 
 }
-    
-
 
 });
 

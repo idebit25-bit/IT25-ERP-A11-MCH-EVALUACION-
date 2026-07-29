@@ -3,297 +3,76 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Document;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentoController extends Controller
 {
-    public function index()
-    {
-        $documentos = collect([
-
-            [
-                'id' => 'DOC-001',
-                'nombre' => 'Manual ERP',
-                'tipo' => 'Manual',
-                'version' => '1.0',
-                'vigencia' => '31/12/2026',
-                'fecha' => '28/05/2026',
-                'estado' => 'Vigente'
-            ],
-
-            [
-                'id' => 'DOC-002',
-                'nombre' => 'Formato Evaluación',
-                'tipo' => 'Formato',
-                'version' => '2.1',
-                'vigencia' => '31/12/2026',
-                'fecha' => '29/05/2026',
-                'estado' => 'Actualizado'
-            ],
-
-            [
-                'id' => 'DOC-003',
-                'nombre' => 'Política RH',
-                'tipo' => 'Política',
-                'version' => '1.3',
-                'vigencia' => '31/12/2026',
-                'fecha' => '30/05/2026',
-                'estado' => 'Vigente'
-            ],
-            
-            [
-                'id' => 'DOC-004',
-                'nombre' => 'Procedimiento Calidad',
-                'tipo' => 'Procedimiento',
-                'version' => '3.0',
-                'vigencia' => '31/12/2022',
-                'fecha' => '31/05/2020',
-                'estado' => 'Vencido'
-            ],
-
-            [
-                'id' => 'DOC-005',
-                'nombre' => 'Instructivo Seguridad',
-                'tipo' => 'Manual',
-                'version' => '1.2',
-                'vigencia' => '31/12/2026',
-                'fecha' => '01/06/2026',
-                'estado' => 'Vigente'
-            ]
-
-            
-
-        ]);
-
-
-        // Buscador
-
-        if(request('search'))
-        {
-            $search = strtolower(request('search'));
-
-            $documentos = $documentos->filter(function($documento) use ($search)
-            {
-                return str_contains(
-                    strtolower($documento['nombre']),
-                    $search
-                )
-                ||
-                str_contains(
-                    strtolower($documento['tipo']),
-                    $search
-                )
-                ||
-                str_contains(
-                    strtolower($documento['id']),
-                    $search
-                );
-            });
-        }
-
-        // Filtrar por tipo
-
-if(request('tipo'))
+ public function index()
 {
-    $documentos = $documentos->filter(function($documento)
-    {
-        return $documento['tipo'] == request('tipo');
-    });
-}
+    $documentos = Document::query();
 
-        // Ordenamiento
+    // Buscar documento
+    if (request('search')) {
+        $search = request('search');
 
-if(request('order'))
-{
-    switch(request('order'))
-    {
-        case 'nombre':
-            $documentos = $documentos->sortBy('nombre');
-            break;
-
-        case 'tipo':
-            $documentos = $documentos->sortBy('tipo');
-            break;
-
-        case 'version':
-            $documentos = $documentos->sortBy('version');
-            break;
-
-        case 'vigencia':
-            $documentos = $documentos->sortBy('vigencia');
-            break;
-
-        case 'fecha':
-            $documentos = $documentos->sortBy('fecha');
-            break;
-
-        case 'estado':
-            $documentos = $documentos->sortBy('estado');
-            break;
+        $documentos->where(function ($query) use ($search) {
+            $query->where('code', 'like', "%{$search}%")
+                  ->orWhere('name', 'like', "%{$search}%")
+                  ->orWhere('type', 'like', "%{$search}%");
+        });
     }
-}
 
-        return view(
-            'documentos.index',
-            compact('documentos')
-        );
+    // Filtrar por tipo
+    if (request('tipo')) {
+        $documentos->where('type', request('tipo'));
     }
+
+    // Ordenamiento
+    $ordenes = [
+        'code',
+        'name',
+        'type',
+        'version',
+        'expiration_date',
+        'created_at',
+        'status',
+    ];
+
+    if (
+        request('order') &&
+        in_array(request('order'), $ordenes)
+    ) {
+        $documentos->orderBy(request('order'));
+    } else {
+        $documentos->latest();
+    }
+
+    $documentos = $documentos->get();
+    $totalManuales = Document::where('type', 'Manual')->count();
+
+    $totalFormatos = Document::where('type', 'Formato')->count();
+
+    $totalPoliticas = Document::where('type', 'Política')->count();
+
+   $totalProcedimientos = Document::where('type', 'Procedimiento')->count();
+
+return view(
+    'documentos.index',
+    compact(
+        'documentos',
+        'totalManuales',
+        'totalFormatos',
+        'totalPoliticas',
+        'totalProcedimientos'
+    )
+);
+
+}
 
 public function show($id)
 {
-    $documentos = collect([
-
-        [
-            'id' => 'DOC-001',
-            'nombre' => 'Manual ERP',
-            'tipo' => 'Manual',
-            'version' => '1.0',
-            'vigencia' => '31/12/2026',
-            'fecha' => '28/05/2026',
-            'estado' => 'Vigente',
-            'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-        ],
-
-        [
-            'id' => 'DOC-002',
-            'nombre' => 'Formato Evaluación',
-            'tipo' => 'Formato',
-            'version' => '2.1',
-            'vigencia' => '31/12/2026',
-            'fecha' => '29/05/2026',
-            'estado' => 'Actualizado',
-            'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-        ],
-
-        [
-            'id' => 'DOC-003',
-            'nombre' => 'Política RH',
-            'tipo' => 'Política',
-            'version' => '1.3',
-            'vigencia' => '31/12/2026',
-            'fecha' => '30/05/2026',
-            'estado' => 'Vigente',
-            'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-        ],
-
-        [
-            'id' => 'DOC-004',
-            'nombre' => 'Procedimiento Calidad',
-            'tipo' => 'Procedimiento',
-            'version' => '3.0',
-            'vigencia' => '31/12/2022',
-            'fecha' => '31/05/2020',
-            'estado' => 'Vencido',
-            'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-        ],
-
-        [
-            'id' => 'DOC-005',
-            'nombre' => 'Instructivo Seguridad',
-            'tipo' => 'Manual',
-            'version' => '1.2',
-            'vigencia' => '31/12/2026',
-            'fecha' => '01/06/2026',
-            'estado' => 'Vigente',
-            'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-        ],
-
-        // Manuales
-    [ 
-    'id' => 'MAN-001',
-    'nombre' => 'Manual ERP Capital Humano',
-    'tipo' => 'Manual',
-    'version' => '1.0',
-    'vigencia' => '31/12/2026',
-    'fecha' => '28/05/2026',
-    'estado' => 'Vigente',
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-
-[
-    'id' => 'MAN-002',
-    'nombre' => 'Manual de Evaluaciones',
-    'tipo' => 'Manual',
-    'version' => '1.2',
-    'vigencia' => '31/12/2026',
-    'fecha' => '30/05/2026',
-    'estado' => 'Vigente' ,
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-
-// Formatos
-[
-    'id' => 'FOR-001',
-    'nombre' => 'Formato de Evaluación de Desempeño',
-    'tipo' => 'Formato',
-    'version' => '2.1',
-    'vigencia' => '31/12/2026',
-    'fecha' => '29/05/2026',
-    'estado' => 'Vigente' ,
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-
-[
-    'id' => 'FOR-002',
-    'nombre' => 'Formato Solicitud de Vacaciones',
-    'tipo' => 'Formato',
-    'version' => '1.3',
-    'vigencia' => '31/12/2026',
-    'fecha' => '30/05/2026',
-    'estado' => 'Vigente' ,
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-
-// Políticas
-[
-    'id' => 'POL-001',
-    'nombre' => 'Política de Asistencia',
-    'tipo' => 'Política',
-    'version' => '1.0',
-    'vigencia' => '31/12/2026',
-    'fecha' => '28/05/2026',
-    'estado' => 'Vigente',
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-
-[
-    'id' => 'POL-002',
-    'nombre' => 'Política de Vacaciones',
-    'tipo' => 'Política',
-    'version' => '1.2',
-    'vigencia' => '31/12/2026',
-    'fecha' => '30/05/2026',
-    'estado' => 'Vigente' ,
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-
-// Procedimientos
-[
-    'id' => 'PROC-001',
-    'nombre' => 'Proceso de Reclutamiento',
-    'tipo' => 'Procedimiento',
-    'version' => '1.0',
-    'vigencia' => '31/12/2026',
-    'fecha' => '28/05/2026',
-    'estado' => 'Vigente',
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-
-[
-    'id' => 'PROC-002',
-    'nombre' => 'Proceso de Evaluación',
-    'tipo' => 'Procedimiento',
-    'version' => '1.1',
-    'vigencia' => '31/12/2026',
-    'fecha' => '30/05/2026',
-    'estado' => 'Vigente' ,
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-
-    ]);
-
-    $documento = $documentos->firstWhere('id', $id);
-
-    abort_if(!$documento, 404);
+    $documento = Document::findOrFail($id);
 
     return view(
         'documentos.show',
@@ -303,164 +82,257 @@ public function show($id)
 
 public function edit($id)
 {
-    $documentos = collect([
-
-        [
-            'id' => 'DOC-001',
-            'nombre' => 'Manual ERP',
-            'tipo' => 'Manual',
-            'version' => '1.0',
-            'vigencia' => '31/12/2026',
-            'fecha' => '28/05/2026',
-            'estado' => 'Vigente' ,
-            'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-        ],
-
-        [
-            'id' => 'DOC-002',
-            'nombre' => 'Formato Evaluación',
-            'tipo' => 'Formato',
-            'version' => '2.1',
-            'vigencia' => '31/12/2026',
-            'fecha' => '29/05/2026',
-            'estado' => 'Actualizado',
-            'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-        ],
-
-        [
-            'id' => 'DOC-003',
-            'nombre' => 'Política RH',
-            'tipo' => 'Política',
-            'version' => '1.3',
-            'vigencia' => '31/12/2026',
-            'fecha' => '30/05/2026',
-            'estado' => 'Vigente',
-            'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-        ],
-
-        [
-            'id' => 'DOC-004',
-            'nombre' => 'Procedimiento Calidad',
-            'tipo' => 'Procedimiento',
-            'version' => '3.0',
-            'vigencia' => '31/12/2022',
-            'fecha' => '31/05/2020',
-            'estado' => 'Vencido',
-            'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-        ],
-
-        [
-            'id' => 'DOC-005',
-            'nombre' => 'Instructivo Seguridad',
-            'tipo' => 'Manual',
-            'version' => '1.2',
-            'vigencia' => '31/12/2026',
-            'fecha' => '01/06/2026',
-            'estado' => 'Vigente',
-            'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-        ],
-
-// Manuales
-
-[ 
-    'id' => 'MAN-001',
-    'nombre' => 'Manual ERP Capital Humano',
-    'tipo' => 'Manual',
-    'version' => '1.0',
-    'vigencia' => '31/12/2026',
-    'fecha' => '28/05/2026',
-    'estado' => 'Vigente',
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-
-[
-    'id' => 'MAN-002',
-    'nombre' => 'Manual de Evaluaciones',
-    'tipo' => 'Manual',
-    'version' => '1.2',
-    'vigencia' => '31/12/2026',
-    'fecha' => '30/05/2026',
-    'estado' => 'Vigente',
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-// Formatos
-
-[
-    'id' => 'FOR-001',
-    'nombre' => 'Formato de Evaluación de Desempeño',
-    'tipo' => 'Formato',
-    'version' => '2.1',
-    'vigencia' => '31/12/2026',
-    'fecha' => '29/05/2026',
-    'estado' => 'Vigente'   ,
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-
-[
-    'id' => 'FOR-002',
-    'nombre' => 'Formato Solicitud de Vacaciones',
-    'tipo' => 'Formato',
-    'version' => '1.3',
-    'vigencia' => '31/12/2026',
-    'fecha' => '30/05/2026',
-    'estado' => 'Vigente'  ,
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-
-// Políticas
-[
-    'id' => 'POL-001',
-    'nombre' => 'Política de Asistencia',
-    'tipo' => 'Política',
-    'version' => '1.0',
-    'vigencia' => '31/12/2026',
-    'fecha' => '28/05/2026',
-    'estado' => 'Vigente'   ,
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-
-[
-    'id' => 'POL-002',
-    'nombre' => 'Política de Vacaciones',
-    'tipo' => 'Política',
-    'version' => '1.2',
-    'vigencia' => '31/12/2026',
-    'fecha' => '30/05/2026',
-    'estado' => 'Vigente',
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-
-// Procedimientos
-[
-    'id' => 'PROC-001',
-    'nombre' => 'Proceso de Reclutamiento',
-    'tipo' => 'Procedimiento',
-    'version' => '1.0',
-    'vigencia' => '31/12/2026',
-    'fecha' => '28/05/2026',
-    'estado' => 'Vigente',
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-
-[
-    'id' => 'PROC-002',
-    'nombre' => 'Proceso de Evaluación',
-    'tipo' => 'Procedimiento',
-    'version' => '1.1',
-    'vigencia' => '31/12/2026',
-    'fecha' => '30/05/2026',
-    'estado' => 'Vigente',
-    'pdf' => 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-],
-    ]);
-
-    $documento = $documentos->firstWhere('id', $id);
-
-    abort_if(!$documento, 404);
+    $documento = Document::findOrFail($id);
 
     return view(
         'documentos.edit',
         compact('documento')
     );
 }
+
+public function create()
+{
+    return view('documentos.create');
+}
+
+public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'type' => 'required|string|max:100',
+        'version' => 'required|string|max:50',
+        'expiration_date' => 'nullable|date',
+        'document' => 'required|file|mimes:pdf|max:5120',
+    ]);
+
+    $ultimo = Document::latest('id')->first();
+
+    $numero = $ultimo
+        ? ((int) str_replace('DOC-', '', $ultimo->code)) + 1
+        : 1;
+
+    $filePath = $request->file('document')->store('documents', 'public');
+
+    Document::create([
+        'code' => 'DOC-' . str_pad($numero, 3, '0', STR_PAD_LEFT),
+        'name' => $request->name,
+        'type' => $request->type,
+        'version' => $request->version,
+        'status' => 'Vigente',
+        'expiration_date' => $request->expiration_date,
+        'file_path' => $filePath,
+        'created_by' => auth()->id(),
+    ]);
+
+    return redirect('/documentos')
+        ->with('success', 'Documento registrado correctamente.');
+}
+
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'type' => 'required|string|max:100',
+        'version' => 'required|string|max:50',
+        'status' => 'required|string|max:50',
+        'expiration_date' => 'nullable|date',
+        'document' => 'nullable|file|mimes:pdf|max:5120',
+    ]);
+
+    $documento = Document::findOrFail($id);
+
+    $datos = [
+        'name' => $request->name,
+        'type' => $request->type,
+        'version' => $request->version,
+        'status' => $request->status,
+        'expiration_date' => $request->expiration_date,
+    ];
+
+    // Reemplazar archivo PDF
+    if ($request->hasFile('document')) {
+
+        // Eliminar archivo anterior
+        if (
+            $documento->file_path &&
+            Storage::disk('public')->exists($documento->file_path)
+        ) {
+            Storage::disk('public')->delete($documento->file_path);
+        }
+
+        // Guardar nuevo archivo
+        $datos['file_path'] = $request
+            ->file('document')
+            ->store('documents', 'public');
+    }
+
+    $documento->update($datos);
+
+    return redirect('/documentos')
+        ->with('success', 'Documento actualizado correctamente.');
+}
+
+public function destroy($id)
+{
+    $documento = Document::findOrFail($id);
+
+    // Eliminar archivo del almacenamiento
+    if (
+        $documento->file_path &&
+        Storage::disk('public')->exists($documento->file_path)
+    ) {
+        Storage::disk('public')->delete($documento->file_path);
+    }
+
+    // Eliminar registro
+    $documento->delete();
+
+    return redirect('/documentos')
+        ->with('success', 'Documento eliminado correctamente.');
+}
+
+public function manuales()
+{
+    $manuales = Document::where('type', 'Manual')
+        ->latest()
+        ->get();
+
+    $totalManuales = $manuales->count();
+
+    $manualesVigentes = $manuales
+        ->where('status', 'Vigente')
+        ->count();
+
+    $proximosVencer = $manuales
+        ->filter(function ($manual) {
+
+            if (!$manual->expiration_date) {
+                return false;
+            }
+
+            return \Carbon\Carbon::parse($manual->expiration_date)
+                ->between(now(), now()->addDays(30));
+
+        })
+        ->count();
+
+    return view(
+        'documentos.manuales',
+        compact(
+            'manuales',
+            'totalManuales',
+            'manualesVigentes',
+            'proximosVencer'
+        )
+    );
+}
+
+public function formatos()
+{
+    $formatos = Document::where('type', 'Formato')
+        ->latest()
+        ->get();
+
+    $totalFormatos = $formatos->count();
+
+    $formatosVigentes = $formatos
+        ->where('status', 'Vigente')
+        ->count();
+
+    $proximosVencer = $formatos
+        ->filter(function ($formato) {
+
+            if (!$formato->expiration_date) {
+                return false;
+            }
+
+            return \Carbon\Carbon::parse($formato->expiration_date)
+                ->between(now(), now()->addDays(30));
+
+        })
+        ->count();
+
+    return view(
+        'documentos.formatos',
+        compact(
+            'formatos',
+            'totalFormatos',
+            'formatosVigentes',
+            'proximosVencer'
+        )
+    );
+}
+
+public function politicas()
+{
+    $politicas = Document::where('type', 'Política')
+        ->latest()
+        ->get();
+
+    $totalPoliticas = $politicas->count();
+
+    $politicasVigentes = $politicas
+        ->where('status', 'Vigente')
+        ->count();
+
+    $proximosVencer = $politicas
+        ->filter(function ($politica) {
+
+            if (!$politica->expiration_date) {
+                return false;
+            }
+
+            return \Carbon\Carbon::parse($politica->expiration_date)
+                ->between(now(), now()->addDays(30));
+
+        })
+        ->count();
+
+    return view(
+        'documentos.politicas',
+        compact(
+            'politicas',
+            'totalPoliticas',
+            'politicasVigentes',
+            'proximosVencer'
+        )
+    );
+}
+
+public function procedimientos()
+{
+    $procedimientos = Document::where('type', 'Procedimiento')
+        ->latest()
+        ->get();
+
+    $totalProcedimientos = $procedimientos->count();
+
+    $procedimientosVigentes = $procedimientos
+        ->where('status', 'Vigente')
+        ->count();
+
+    $proximosVencer = $procedimientos
+        ->filter(function ($procedimiento) {
+
+            if (!$procedimiento->expiration_date) {
+                return false;
+            }
+
+            return \Carbon\Carbon::parse($procedimiento->expiration_date)
+                ->between(now(), now()->addDays(30));
+
+        })
+        ->count();
+
+    return view(
+        'documentos.procedimientos',
+        compact(
+            'procedimientos',
+            'totalProcedimientos',
+            'procedimientosVigentes',
+            'proximosVencer'
+        )
+    );
+}
+
 }
