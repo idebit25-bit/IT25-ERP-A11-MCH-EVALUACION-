@@ -4,23 +4,35 @@
 
 <div class="content-wrapper">
 
-    <!-- Encabezado -->
+<!-- Encabezado -->
 
-    <div class="dashboard-header">
+<div class="dashboard-header">
+
+    <div>
 
         <h1>
-            Bienvenido César Hernández
+
+            ¡Bienvenido, {{ auth()->user()->first_name }}!
+
         </h1>
 
         <p>
-            Módulo Capital Humano | Evaluación de Desempeño
+
+            ERP Capital Humano · Gestión Integral del Personal
+
         </p>
 
         <small>
-            Última actualización: {{ now()->format('d/m/Y') }}
+
+            <i class="bi bi-calendar-event"></i>
+
+            {{ now()->translatedFormat('d \d\e F \d\e Y') }}
+
         </small>
 
     </div>
+
+</div>
 
     <!-- Indicadores -->
 
@@ -43,7 +55,7 @@
                             </p>
 
                             <h2 class="stats-number">
-                                {{24}}
+                                {{ $colaboradores }}
                             </h2>
 
                         </div>
@@ -75,7 +87,7 @@
                             </p>
 
                             <h2 class="stats-number">
-                                12
+                                {{ $evaluaciones }}
                             </h2>
 
                         </div>
@@ -107,7 +119,7 @@
                             </p>
 
                             <h2 class="stats-number">
-                                35
+                                {{ $documentos }}
                             </h2>
 
                         </div>
@@ -139,7 +151,7 @@
                             </p>
 
                             <h2 class="stats-number">
-                                8
+                                {{ $reportes }}
                             </h2>
 
                         </div>
@@ -156,15 +168,29 @@
 
     </div>
 
-    <!-- Actividad reciente -->
+    <!-- Últimas evaluaciones -->
 
     <div class="card border-0 table-card">
 
-        <div class="card-header">
+<div class="card-header d-flex justify-content-between align-items-center">
 
-            Actividad reciente
+    <span>
 
-        </div>
+        Últimas evaluaciones
+
+    </span>
+
+    <a
+        href="{{ route('evaluaciones.index') }}"
+        class="btn btn-sm btn-outline-primary">
+
+        <i class="bi bi-arrow-right-circle me-1"></i>
+
+        Ver todas
+
+    </a>
+
+</div>
 
         <div class="card-body">
 
@@ -176,67 +202,113 @@
 
                         <th>Colaborador</th>
 
-                        <th>Área</th>
-
-                        <th>Evaluación</th>
+                        <th>Tipo de Evalución</th>
 
                         <th>Estado</th>
+
+                        <th>Fecha</th>
 
                     </tr>
 
                 </thead>
 
-                <tbody>
+<tbody>
 
-                    <tr>
+    @forelse ($ultimasEvaluaciones as $evaluacion)
 
-                        <td>Juan Pérez</td>
+        <tr>
 
-                        <td>Desarrollo</td>
+            <td>
 
-                        <td>Desempeño Trimestral</td>
+                {{ $evaluacion->user->full_name }}
 
-                        <td>
-                            <span class="badge bg-success">
-                                Completada
-                            </span>
-                        </td>
+            </td>
 
-                    </tr>
+            <td>
 
-                    <tr>
+                {{ $evaluacion->evaluationType->name }}
 
-                        <td>Ana López</td>
+            </td>
 
-                        <td>Recursos Humanos</td>
+            <td>
 
-                        <td>Evaluación KPIs</td>
+                @switch($evaluacion->status)
 
-                        <td>
-                            <span class="badge bg-warning text-dark">
-                                Pendiente
-                            </span>
-                        </td>
+                    @case('completed')
 
-                    </tr>
+                        <span class="badge bg-success">
 
-                    <tr>
+                            {{ $evaluacion->status_label }}
 
-                        <td>Carlos Gómez</td>
+                        </span>
 
-                        <td>Soporte</td>
+                        @break
 
-                        <td>Evaluación Mensual</td>
+                    @case('in_progress')
 
-                        <td>
-                            <span class="badge bg-primary">
-                                En proceso
-                            </span>
-                        </td>
+                        <span class="badge bg-primary">
 
-                    </tr>
+                            {{ $evaluacion->status_label }}
 
-                </tbody>
+                        </span>
+
+                        @break
+
+                    @case('draft')
+
+                        <span class="badge bg-warning text-dark">
+
+                            {{ $evaluacion->status_label }}
+
+                        </span>
+
+                        @break
+
+                    @case('cancelled')
+
+                        <span class="badge bg-danger">
+
+                            {{ $evaluacion->status_label }}
+
+                        </span>
+
+                        @break
+
+                    @default
+
+                        <span class="badge bg-secondary">
+
+                            {{ $evaluacion->status_label }}
+
+                        </span>
+
+                @endswitch
+
+            </td>
+
+            <td>
+
+                {{ \Carbon\Carbon::parse($evaluacion->evaluation_date)->format('d/m/Y') }}
+
+            </td>
+
+        </tr>
+
+    @empty
+
+        <tr>
+
+            <td colspan="4" class="text-center text-muted">
+
+                No existen evaluaciones registradas.
+
+            </td>
+
+        </tr>
+
+    @endforelse
+
+</tbody>
 
             </table>
 

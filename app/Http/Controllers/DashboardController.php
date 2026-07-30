@@ -3,34 +3,53 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\UserEvaluation;
+use App\Models\Evaluation;
+use App\Models\Document;
 
 class DashboardController extends Controller
 {
-    public function index()
-    {
-        try {
+public function index()
+{
+    try {
 
-            $colaboradores = User::count();
+        // Obtener indicadores
 
-            $evaluaciones = UserEvaluation::count();
+        $colaboradores = User::count();
 
-            $documentos = 0;
+        $evaluaciones = Evaluation::count();
 
-        } catch (\Exception $e) {
+        $documentos = Document::count();
 
-            $colaboradores = 6;
-            $evaluaciones = 3;
-            $documentos = 18;
-        }
+        // Reportes disponibles
 
-        $reportes = 8;
+        $reportes = 4;
 
-        return view('dashboard.index', compact(
-            'colaboradores',
-            'evaluaciones',
-            'documentos',
-            'reportes'
-        ));
+    } catch (\Exception $e) {
+
+        $colaboradores = 0;
+        $evaluaciones = 0;
+        $documentos = 0;
+        $reportes = 0;
     }
+
+    // Obtener las últimas evaluaciones
+
+$ultimasEvaluaciones = Evaluation::with([
+    'user',
+    'evaluationType',
+])
+->orderByDesc('evaluation_date')
+->take(5)
+->get();
+
+return view('dashboard.index', compact(
+    'colaboradores',
+    'evaluaciones',
+    'documentos',
+    'reportes',
+    'ultimasEvaluaciones'
+));
+
+}
+
 }

@@ -1,9 +1,169 @@
 /* Footer */
 
-.footer{
-    background-color: #1f2937;
-    color: white;
+.footer {
 
-    text-align: center;
-    padding: 15px;
+    background: #000;
+
+    color: #fff;
+
+    padding: 35px 45px;
+
+    margin-top: 60px;
+
+}
+
+.footer h4 {
+
+    color: #fff;
+
+    font-weight: 700;
+
+    margin-bottom: 10px;
+
+}
+
+.footer h5 {
+
+    color: #0d6efd;
+
+    margin-bottom: 18px;
+
+    margin-right:40px;
+
+}
+
+.footer p {
+
+    margin-bottom: 8px;
+
+    line-height: 1.6;
+
+}
+
+.footer small {
+
+    color: #d9d9d9;
+
+}
+
+.footer i {
+
+    margin-right: 8px;
+
+}
+
+.footer a {
+
+    color: #fff;
+
+    text-decoration: none;
+
+}
+
+.footer a:hover {
+
+    color: #0d6efd;
+
+}
+
+
+/* Redes */
+
+.footer-redes {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    gap: 2px;
+
+}
+
+
+/* Iconos */
+
+.footer-icon {
+
+    width: 60px;
+
+    height: 80px;
+
+    object-fit: contain;
+
+    transition: .2s;
+
+}
+
+.footer-icon:hover {
+
+    transform: scale(1.08);
+
+}
+
+
+/* Hecho en México */
+
+.footer-mexico {
+
+    width: 120px;
+
+    height: auto;
+
+    margin-right: 10px;
+
+}
+
+
+/* Responsive */
+
+@media (max-width: 991px) {
+
+    .footer {
+
+        text-align: center;
+
+        padding: 30px 20px;
+
+    }
+
+    .footer-redes {
+
+        justify-content: center;
+
+        margin-top: 20px;
+
+    }
+
+    .footer-icon {
+
+        width: 28px;
+
+        height: 28px;
+
+    }
+
+    .footer-mexico {
+
+        width: 50px;
+
+        margin-right: 6px;
+
+    }
+
+}
+
+/* Logo */
+
+.navbar-logo{
+
+    height: 65px;
+
+    width: auto;
+
+    object-fit: contain;
+
+    margin-right: 10px;
+
 }

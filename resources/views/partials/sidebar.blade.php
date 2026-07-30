@@ -15,7 +15,7 @@
         </p>
 
         <small>
-            Evaluación de Desempeño
+            v1.0
         </small>
 
     </div>
@@ -24,22 +24,26 @@
 
     <ul>
 
+<li>
+
+    <a
+        href="{{ url('/dashboard') }}"
+        class="{{ request()->is('dashboard') ? 'active' : '' }}"
+    >
+
+        <i class="bi bi-grid"></i>
+
+        Dashboard
+
+    </a>
+
+</li>
+
         <li>
 
-            <a href="/dashboard">
-
-                <i class="bi bi-grid"></i>
-
-                Dashboard
-
-            </a>
-
-        </li>
-
-        <li>
-
-            <a href="/evaluaciones">
-
+            <a href="{{ url('/evaluaciones') }}"
+                class="{{ request()->is('evaluaciones') ? 'active' : '' }}"
+            >
                 <i class="bi bi-clipboard-check"></i>
 
                 Evaluaciones
@@ -50,8 +54,9 @@
 
         <li>
 
-            <a href="/documentos">
-
+            <a href="{{ url('/documentos') }}"
+                class="{{ request()->is('documentos') ? 'active' : '' }}"
+            >
                 <i class="bi bi-folder"></i>
 
                 Documentos
@@ -62,7 +67,9 @@
 
         <li>
 
-            <a href="/colaboradores">
+            <a href="{{ url('/colaboradores') }}"
+                class="{{ request()->is('colaboradores') ? 'active' : '' }}"
+            >
 
                 <i class="bi bi-people"></i>
 
@@ -74,7 +81,9 @@
 
         <li>
 
-            <a href="/reportes">
+            <a href="{{ url('/reportes') }}"
+                class="{{ request()->is('reportes') ? 'active' : '' }}"
+            >
 
                 <i class="bi bi-bar-chart"></i>
 
@@ -86,7 +95,9 @@
 
         <li>
 
-            <a href="/configuracion">
+            <a href="{{ url('/configuracion') }}"
+                class="{{ request()->is('configuracion') ? 'active' : '' }}"
+            >
 
                 <i class="bi bi-gear"></i>
 

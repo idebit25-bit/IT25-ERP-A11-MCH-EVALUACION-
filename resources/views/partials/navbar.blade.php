@@ -10,37 +10,48 @@
 
         </button>
 
-        <div class="navbar-title">
+<div class="navbar-title">
 
-            <strong>I-DEB</strong>
+    <img
+        src="{{ asset('images/footer/ideb-logo-blanco.png') }}"
+        alt="I-DEB"
+        class="navbar-logo"
+    >
 
-            <span>
-                | Capital Humano
-            </span>
+    <span>
 
-        </div>
+    | Capital Humano
+
+    </span>
+
+</div>
 
     </div>
 
 <div class="navbar-user dropdown">
 
-    <div
-        class="navbar-user-info"
-        data-bs-toggle="dropdown"
-        aria-expanded="false">
+<div
+    class="navbar-user-info"
+    data-bs-toggle="dropdown"
+    aria-expanded="false">
 
-        <i class="bi bi-person-circle"></i>
+    <i class="bi bi-person-circle"></i>
 
-        <span>
+    <div class="navbar-user-data">
+
+        <span class="navbar-user-name">
 
             {{ auth()->user()?->first_name }}
             {{ auth()->user()?->paternal_surname }}
 
         </span>
 
-        <i class="bi bi-chevron-down"></i>
 
     </div>
+
+    <i class="bi bi-chevron-down"></i>
+
+</div>
 
     <ul class="dropdown-menu dropdown-menu-end">
 
