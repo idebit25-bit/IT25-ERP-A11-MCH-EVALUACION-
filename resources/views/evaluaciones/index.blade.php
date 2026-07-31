@@ -95,24 +95,16 @@
             <div>
 
                 <strong>
-                    Total de evaluaciones registradas
+                    Gestión de evaluaciones
                 </strong>
 
                 <p class="text-muted mb-0">
-                    Información simulada para demostración visual.
+                    Consulta, administra y aplica evaluaciones de desempeño.
                 </p>
 
             </div>
 
             <div class="d-flex gap-2">
-
-                <button class="btn btn-outline-secondary">
-
-                    <i class="bi bi-clock-history"></i>
-
-                    Historial
-
-                </button>
 
                 <a href="/evaluaciones/create" class="btn btn-primary">
 
@@ -132,117 +124,124 @@
 
 <!-- Filtros -->
 
-<div class="card border-0 table-card mb-4">
+<form
+    method="GET"
+    action="{{ url('/evaluaciones') }}">
 
-    <div class="card-body">
+    <div class="card border-0 table-card mb-4">
 
-        <div class="d-flex gap-2 flex-wrap">
+        <div class="card-body">
 
-            <button class="btn btn-dark">
-                Todas
-            </button>
+            <div class="row g-2">
 
-            <button class="btn btn-outline-warning">
-                Pendientes
-            </button>
+                <div class="col-md-5">
 
-            <button class="btn btn-outline-success">
-                Completadas
-            </button>
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Buscar colaborador, tipo o evaluador..."
+                        value="{{ request('search') }}">
 
-            <button class="btn btn-outline-primary">
-                En proceso
-            </button>
+                </div>
+
+                <div class="col-md-3">
+
+                    <select
+                        name="status"
+                        class="form-select">
+
+                        <option value="">
+                            Todos los estados
+                        </option>
+
+                        <option
+                            value="draft"
+                            {{ request('status') == 'draft' ? 'selected' : '' }}>
+                            Borrador
+                        </option>
+
+                        <option
+                            value="in_progress"
+                            {{ request('status') == 'in_progress' ? 'selected' : '' }}>
+                            En proceso
+                        </option>
+
+                        <option
+                            value="completed"
+                            {{ request('status') == 'completed' ? 'selected' : '' }}>
+                            Completada
+                        </option>
+
+                        <option
+                            value="cancelled"
+                            {{ request('status') == 'cancelled' ? 'selected' : '' }}>
+                            Cancelada
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <select
+                        name="order"
+                        class="form-select">
+
+                        <option value="">
+                            Ordenar por
+                        </option>
+
+                        <option
+                            value="evaluation_date"
+                            {{ request('order') == 'evaluation_date' ? 'selected' : '' }}>
+                            Fecha
+                        </option>
+
+                        <option
+                            value="status"
+                            {{ request('order') == 'status' ? 'selected' : '' }}>
+                            Estado
+                        </option>
+
+                        <option
+                            value="total_score"
+                            {{ request('order') == 'total_score' ? 'selected' : '' }}>
+                            Calificación
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-2 d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100">
+
+                        Buscar
+
+                    </button>
+
+                    <a
+                        href="{{ url('/evaluaciones') }}"
+                        class="btn btn-outline-secondary">
+
+                        <i class="bi bi-arrow-clockwise"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
-
-<!-- Buscador y Ordenar -->
-
-<div class="card border-0 table-card mb-4">
-
-    <div class="card-body">
-
-        <div class="row">
-
-            <div class="col-md-8 mb-2">
-
-                <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Buscar colaborador, puesto o evaluación..."
-                >
-
-            </div>
-
-            <div class="col-md-4">
-
-                <select class="form-select">
-
-                    <option>
-                        Ordenar por
-                    </option>
-
-                    <option>
-                        Fecha
-                    </option>
-
-                    <option>
-                        Colaborador
-                    </option>
-
-                    <option>
-                        Estado
-                    </option>
-
-                    <option>
-                        Calificación
-                    </option>
-
-                </select>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-{{-- Mensaje de éxito --}}
-@if(session('success'))
-
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-
-        {{ session('success') }}
-
-        <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="alert"
-            aria-label="Cerrar">
-        </button>
-
-    </div>
-
-@endif
-
-@if(session('error'))
-<div class="alert alert-danger alert-dismissible fade show">
-
-    {{ session('error') }}
-
-    <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="alert">
-    </button>
-
-</div>
-@endif
+</form>
 
 <!-- Tabla principal -->
 
@@ -310,7 +309,7 @@
     </td>
 
     <td>
-        {{ $evaluation->evaluation_date }}
+        {{ \Carbon\Carbon::parse($evaluation->evaluation_date)->format('d/m/Y') }}
     </td>
 
     <td>
@@ -332,6 +331,12 @@
             @case('cancelled')
                 <span class="badge bg-danger">
                     Cancelada
+                </span>
+                @break
+
+            @case('in_progress')
+                <span class="badge bg-primary">
+                    En proceso
                 </span>
                 @break
 

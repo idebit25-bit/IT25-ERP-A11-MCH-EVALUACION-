@@ -11,6 +11,10 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Exports\EvaluacionesExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Document;
+use App\Exports\ColaboradoresExport;
+use App\Exports\DocumentosExport;
+use App\Exports\GeneralRHExport;
 
 
 
@@ -129,27 +133,136 @@ return view('reportes.index', compact(
 
 }
 
+/**
+ * Generar reporte en PDF.
+ */
 public function generarPdf(Request $request, $tipo)
 {
-    $evaluaciones = $this->obtenerEvaluaciones();
+    // Obtener información del reporte
 
-    $pdf = Pdf::loadView('reportes.pdf', [
-        'evaluaciones' => $evaluaciones,
+    switch ($tipo) {
+
+        case 'colaboradores':
+
+            $datos = $this->obtenerColaboradores();
+
+            break;
+
+        case 'documentos':
+
+            $datos = $this->obtenerDocumentos();
+
+            break;
+
+        case 'general':
+
+            $datos = $this->obtenerResumenGeneral();
+
+            break;
+
+        default:
+
+            $datos = $this->obtenerEvaluaciones();
+
+            break;
+
+    }
+
+    // Variables para la vista
+
+    $variables = [
+
         'tipo' => $tipo,
-        'usuario' => auth()->user(),
-    ]);
 
-    return $pdf->stream('reporte_' . $tipo . '.pdf');
+        'usuario' => auth()->user(),
+
+    ];
+
+    // El reporte de evaluaciones utiliza la variable original
+
+    if ($tipo == 'evaluaciones') {
+
+        $variables['evaluaciones'] = $datos;
+
+    } else {
+
+        $variables['datos'] = $datos;
+
+    }
+
+    // Generar PDF
+
+    $pdf = Pdf::loadView(
+
+        'reportes.pdf.' . $tipo,
+
+        $variables
+
+    );
+
+    return $pdf->stream(
+
+        'reporte_' . $tipo . '.pdf'
+
+    );
 }
 
+/**
+ * Generar reporte en Excel.
+ */
 public function generarExcel(Request $request, $tipo)
 {
-    $evaluaciones = $this->obtenerEvaluaciones();
+    switch ($tipo) {
 
-    return Excel::download(
-        new EvaluacionesExport($evaluaciones),
-        'reporte_' . $tipo . '.xlsx'
-    );
+        case 'colaboradores':
+
+            return Excel::download(
+
+                new ColaboradoresExport(
+                    $this->obtenerColaboradores()
+                ),
+
+                'reporte_colaboradores.xlsx'
+
+            );
+
+        case 'documentos':
+
+            return Excel::download(
+
+                new DocumentosExport(
+                    $this->obtenerDocumentos()
+                ),
+
+                'reporte_documentos.xlsx'
+
+            );
+
+        case 'general':
+
+            return Excel::download(
+
+                new GeneralRHExport(
+                    $this->obtenerResumenGeneral()
+                ),
+
+                'reporte_general_rh.xlsx'
+
+            );
+
+        default:
+
+            return Excel::download(
+
+                new EvaluacionesExport(
+                    $this->obtenerEvaluaciones()
+                ),
+
+                'reporte_evaluaciones.xlsx'
+
+            );
+
+    }
 }
 
 private function obtenerEvaluaciones()
@@ -185,6 +298,46 @@ private function obtenerEvaluaciones()
 
     ->latest()
     ->get();
+}
+
+/**
+ * Obtener colaboradores para el reporte.
+ */
+private function obtenerColaboradores()
+{
+    return User::with([
+        'department',
+        'position',
+    ])
+    ->orderBy('first_name')
+    ->get();
+}
+
+/**
+ * Obtener documentos para el reporte.
+ */
+private function obtenerDocumentos()
+{
+    return Document::orderByDesc('created_at')
+        ->get();
+}
+
+/**
+ * Obtener resumen general del módulo.
+ */
+private function obtenerResumenGeneral()
+{
+    return [
+
+        'colaboradores' => User::count(),
+
+        'evaluaciones' => Evaluation::count(),
+
+        'documentos' => Document::count(),
+
+        'departamentos' => Department::count(),
+
+    ];
 }
 
 }

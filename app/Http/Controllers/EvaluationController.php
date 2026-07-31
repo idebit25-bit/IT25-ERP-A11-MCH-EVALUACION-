@@ -16,27 +16,91 @@ use Illuminate\Http\Request;
 
 class EvaluationController extends Controller
 {
-    /**
-     * Mostrar listado de evaluaciones.
-     */
-    public function index()
-    {
-        // Obtener evaluaciones con sus relaciones
-        $evaluations = Evaluation::with([
-            'user',
-            'evaluationType',
-            'period',
-            'template',
-            'evaluator',
-        ])
-        ->orderByDesc('evaluation_date')
-        ->get();
+/**
+ * Mostrar listado de evaluaciones.
+ */
+public function index()
+{
+    // Obtener evaluaciones con relaciones
 
-        return view(
-            'evaluaciones.index',
-            compact('evaluations')
-        );
+    $evaluations = Evaluation::with([
+        'user',
+        'evaluationType',
+        'period',
+        'template',
+        'evaluator',
+    ]);
+
+    // Buscar evaluación
+
+    if (request('search')) {
+
+        $search = request('search');
+
+        $evaluations->where(function ($query) use ($search) {
+
+            $query->whereHas('user', function ($q) use ($search) {
+
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('paternal_surname', 'like', "%{$search}%");
+
+            })
+
+            ->orWhereHas('evaluationType', function ($q) use ($search) {
+
+                $q->where('name', 'like', "%{$search}%");
+
+            })
+
+            ->orWhereHas('evaluator', function ($q) use ($search) {
+
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('paternal_surname', 'like', "%{$search}%");
+
+            });
+
+        });
+
     }
+
+    // Filtrar por estado
+
+    if (request('status')) {
+
+        $evaluations->where('status', request('status'));
+
+    }
+
+    // Ordenar resultados
+
+    $ordenes = [
+
+        'evaluation_date',
+        'status',
+        'total_score',
+
+    ];
+
+    if (
+        request('order') &&
+        in_array(request('order'), $ordenes)
+    ) {
+
+        $evaluations->orderBy(request('order'));
+
+    } else {
+
+        $evaluations->orderByDesc('evaluation_date');
+
+    }
+
+    $evaluations = $evaluations->get();
+
+    return view(
+        'evaluaciones.index',
+        compact('evaluations')
+    );
+}
 
     /**
  * Mostrar formulario para crear una evaluación.
