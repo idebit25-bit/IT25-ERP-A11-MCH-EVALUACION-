@@ -7,12 +7,39 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    public function accessRoles()
+    {
+        return $this->belongsToMany(\App\Models\AccessRole::class, 'model_has_roles', 'model_id', 'role_id')
+            ->wherePivot('model_type', self::class)
+            ->where('guard_name', 'web');
+    }
+
+    public function hasAccessRole(string $role): bool
+    {
+        return $this->accessRoles->contains('name', $role);
+    }
+
+    public function canManageOperations(): bool
+    {
+        return $this->hasAccessRole('Super Admin') || $this->hasAccessRole('Admin');
+    }
+
+    public function hasModulePermission(string $permission): bool
+    {
+        if ($this->hasAccessRole('Super Admin')) {
+            return true;
+        }
+
+        return $this->hasAccessRole('Admin') && $this->accessRoles->contains(
+            fn ($role) => $role->permissions->contains(fn ($item) => $item->guard_name === 'web' && $item->name === $permission)
+        );
+    }
 
     /**
      * Campos asignables.

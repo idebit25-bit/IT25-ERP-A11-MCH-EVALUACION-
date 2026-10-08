@@ -24,6 +24,7 @@
 
     <ul>
 
+@if(auth()->user()->canManageOperations())
 <li>
 
     <a
@@ -52,6 +53,7 @@
 
         </li>
 
+@endif
         <li>
 
             <a href="{{ url('/documentos') }}"
@@ -65,7 +67,9 @@
 
         </li>
 
-        <li>
+@if(auth()->user()->canManageOperations())
+        @if(auth()->user()->hasModulePermission('colaboradores.gestionar'))
+<li>
 
             <a href="{{ url('/colaboradores') }}"
                 class="{{ request()->is('colaboradores') ? 'active' : '' }}"
@@ -78,8 +82,10 @@
             </a>
 
         </li>
+@endif
 
-        <li>
+        @if(auth()->user()->hasModulePermission('reportes.consultar'))
+<li>
 
             <a href="{{ url('/reportes') }}"
                 class="{{ request()->is('reportes') ? 'active' : '' }}"
@@ -92,7 +98,10 @@
             </a>
 
         </li>
+@endif
 
+@endif
+@if(auth()->user()->hasModulePermission('configuracion.evaluaciones'))
         <li>
 
             <a href="{{ url('/configuracion') }}"
@@ -107,6 +116,10 @@
 
         </li>
 
+@endif
+@if(auth()->user()->hasAccessRole('Super Admin'))
+<li><a href="{{ route('configuracion.roles') }}"><i class="bi bi-shield-lock"></i> Roles y permisos</a></li>
+@endif
     </ul>
 
 </div>

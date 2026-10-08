@@ -14,6 +14,7 @@
         ERP Capital Humano
 
     </title>
+    <link rel="icon" type="image/png" href="{{ asset('images/company-icon.png') }}">
 
     @vite([
         'resources/css/app.css',
@@ -23,6 +24,8 @@
 </head>
 
 <body class="bg-light">
+
+    @include('partials.messages')
 
     @yield('content')
 

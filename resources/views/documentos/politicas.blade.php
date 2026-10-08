@@ -115,6 +115,7 @@
 
                 </div>
 
+@if(auth()->user()->hasModulePermission('documentos.gestionar'))
 <button
     class="btn btn-warning"
     data-bs-toggle="modal"
@@ -126,6 +127,7 @@
                     Subir Política
 
                 </button>
+@endif
 
             </div>
 
@@ -282,14 +284,17 @@
             <i class="bi bi-eye"></i>
         </a>
 
-        <a
+        @if(auth()->user()->hasModulePermission('documentos.gestionar'))
+<a
             href="{{ url('/documentos/' . $politica->id . '/edit') }}"
             class="btn btn-sm btn-outline-warning"
         >
             <i class="bi bi-pencil-square"></i>
         </a>
+@endif
 
-        <button
+        @if(auth()->user()->hasModulePermission('documentos.gestionar'))
+<button
             class="btn btn-sm btn-outline-danger"
             data-bs-toggle="modal"
             data-bs-target="#deleteModal"
@@ -298,6 +303,7 @@
         >
             <i class="bi bi-trash"></i>
         </button>
+@endif
 
     </td>
 

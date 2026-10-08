@@ -112,7 +112,11 @@ public function create()
 
 public function store(StoreUserRequest $request)
 {
-    User::create($request->validated());
+    \Illuminate\Support\Facades\DB::transaction(function () use ($request) {
+        $user = User::create($request->validated());
+        $role = \App\Models\AccessRole::where('name', 'Usuario')->where('guard_name', 'web')->firstOrFail();
+        $user->accessRoles()->attach($role->id, ['model_type' => User::class]);
+    });
 
     return redirect()
         ->route('colaboradores.index')

@@ -175,7 +175,8 @@ switch ($documento->type) {
 
 </a>
 
-                <a href="/documentos/{{ $documento['id'] }}/edit"
+                @if(auth()->user()->hasModulePermission('documentos.gestionar'))
+<a href="/documentos/{{ $documento['id'] }}/edit"
                 class="btn btn-warning">
 
                 <i class="bi bi-pencil-square"></i>
@@ -183,6 +184,7 @@ switch ($documento->type) {
                 Editar
 
                 </a>
+@endif
 
 <a
     href="{{ asset('storage/' . $documento->file_path) }}"

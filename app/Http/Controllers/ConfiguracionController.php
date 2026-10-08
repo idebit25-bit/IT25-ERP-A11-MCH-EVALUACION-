@@ -13,13 +13,13 @@ class ConfiguracionController extends Controller
             // Cuando vuelva la BD aquí irán las consultas reales
 
             // User::count();
-            $usuarios = 12;
+            $usuarios = \App\Models\User::count();
 
             // Role::count();
-            $roles = 5;
+            $roles = \App\Models\AccessRole::where('guard_name', 'web')->count();
 
             // Permission::count();
-            $permisos = 28;
+            $permisos = count(\App\Models\AccessRole::PERMISSIONS);
 
             // Backup::count();
             $respaldos = 10;
@@ -82,83 +82,18 @@ class ConfiguracionController extends Controller
 
     public function usuarios()
     {
-    try {
+        $usuarios = \App\Models\User::with('accessRoles')->orderBy('id')->get()->map(fn ($user) => [
+            'id' => $user->id,
+            'nombre' => $user->full_name,
+            'usuario' => $user->username ?? $user->email,
+            'correo' => $user->email,
+            'rol' => $user->accessRoles->pluck('name')->implode(', ') ?: 'Sin rol',
+            'estado' => $user->status === 'active' ? 'Activo' : 'Inactivo',
+            'ultimoAcceso' => '-',
+        ])->all();
 
-        // Datos simulados de usuarios
-        //Si ocurre un error se devuelve un arreglo vacio
-
-        $usuarios = [
-
-            [
-
-                'id' => 'USR-001',
-
-                'nombre' => 'César Hernández',
-
-                'usuario' => 'chernandez',
-
-                'correo' => 'cesar@empresa.com',
-
-                'rol' => 'Administrador',
-
-                'estado' => 'Activo',
-
-                'ultimoAcceso' => '25/06/2026 08:30 a.m.'
-
-            ],
-
-            [
-
-                'id' => 'USR-002',
-
-                'nombre' => 'Juan Pérez',
-
-                'usuario' => 'jperez',
-
-                'correo' => 'juan@empresa.com',
-
-                'rol' => 'Recursos Humanos',
-
-                'estado' => 'Activo',
-
-                'ultimoAcceso' => '24/06/2026 10:15 a.m.'
-
-            ],
-
-            [
-
-                'id' => 'USR-003',
-
-                'nombre' => 'Ana López',
-
-                'usuario' => 'alopez',
-
-                'correo' => 'ana@empresa.com',
-
-                'rol' => 'Supervisor',
-
-                'estado' => 'Bloqueado',
-
-                'ultimoAcceso' => '20/06/2026 04:20 p.m.'
-
-            ]
-
-        ];
-
-    } catch (\Exception $e) {
-
-        $usuarios = [];
-
+        return view('configuracion.usuarios', compact('usuarios'));
     }
-
-    return view(
-        'configuracion.usuarios',
-        compact(
-            'usuarios'
-        )
-    );
-
-}
 
 public function roles()
 {

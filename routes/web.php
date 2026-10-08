@@ -33,7 +33,10 @@ Route::post(
 )->name('login.store');
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', \App\Http\Middleware\EnsureRoleAccess::class])->group(function () {
+
+Route::put('/configuracion/usuarios/{id}/acceso', [\App\Http\Controllers\AccessController::class, 'updateUser'])->name('accesos.update');
+Route::put('/configuracion/roles/{id}/permisos', [\App\Http\Controllers\AccessController::class, 'updatePermissions'])->name('accesos.permissions');
 
 Route::post('/logout', [LogoutController::class, 'destroy'])
     ->name('logout');
@@ -138,7 +141,7 @@ Route::get(
 
 Route::get(
     '/configuracion/roles',
-    [ConfiguracionController::class, 'roles']
+    [\App\Http\Controllers\AccessController::class, 'index']
 )->name('configuracion.roles');
 
 

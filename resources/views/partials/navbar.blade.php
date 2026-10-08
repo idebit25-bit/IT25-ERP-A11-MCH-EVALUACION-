@@ -12,11 +12,24 @@
 
 <div class="navbar-title">
 
+    @php
+        $inicio = auth()->user()->canManageOperations() ? 'dashboard' : 'documentos';
+        $enInicio = request()->is($inicio);
+    @endphp
+
+    @unless($enInicio)
+        <a href="{{ url('/'.$inicio) }}" aria-label="Ir al inicio" class="text-decoration-none">
+    @endunless
+
     <img
         src="{{ asset('images/footer/ideb-logo-blanco.png') }}"
         alt="I-DEB"
         class="navbar-logo"
     >
+
+    @unless($enInicio)
+        </a>
+    @endunless
 
     <span>
 
@@ -28,6 +41,7 @@
 
     </div>
 
+<div class="d-flex align-items-center gap-3">
 <div class="navbar-user dropdown">
 
 <div
@@ -81,4 +95,5 @@
 
 </div>
 
+</div>
 </nav>

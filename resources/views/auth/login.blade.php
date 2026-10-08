@@ -31,7 +31,7 @@
 
                     <form
                         method="POST"
-                        action="#">
+                        action="{{ route('login.store') }}">
 
                         @csrf
 
@@ -47,6 +47,7 @@
                                 type="email"
                                 class="form-control"
                                 name="email"
+                                value="{{ old('email') }}"
                                 required>
 
                         </div>

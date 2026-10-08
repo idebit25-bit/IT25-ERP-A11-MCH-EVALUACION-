@@ -20,6 +20,7 @@
 
     <!-- Tarjetas -->
 
+@if(auth()->user()->hasAccessRole('Super Admin'))
 <!-- Administración -->
 
 <div class="mb-4">
@@ -102,6 +103,7 @@
 
 </div>
 
+@endif
 <!-- Configuración de Evaluaciones -->
 
 <div class="mb-4">
@@ -404,7 +406,7 @@
 
 </div>
 
-<!-- Configuración General -->
+<!-- Información General del Sistema -->
 
 <div class="card border-0 table-card mb-4">
 
