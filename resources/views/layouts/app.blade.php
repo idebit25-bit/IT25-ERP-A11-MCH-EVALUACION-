@@ -9,7 +9,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body>
+<body data-change-saved="{{ session()->has('success') ? '1' : '0' }}"
+      data-refresh-list="{{ request()->is('evaluaciones', 'mis-evaluaciones', 'notificaciones', 'dashboard', 'documentos', 'documentos/manuales', 'documentos/formatos', 'documentos/politicas', 'documentos/procedimientos') ? '1' : '0' }}">
 
     {{-- Navbar --}}
     @include('partials.navbar')
@@ -27,7 +28,8 @@
 
     </div>
 
-    {{-- Footer --}}
+
+
     @include('partials.footer')
 
     @stack('scripts')

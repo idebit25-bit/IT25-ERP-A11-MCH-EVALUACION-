@@ -42,6 +42,7 @@
     </div>
 
 <div class="d-flex align-items-center gap-3">
+@include('partials.notifications')
 <div class="navbar-user dropdown">
 
 <div

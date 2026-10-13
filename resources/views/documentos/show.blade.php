@@ -85,7 +85,7 @@
         </div>
 
         <div class="col-md-9">
-            {{ \Carbon\Carbon::parse($documento->expiration_date)->format('d/m/Y') }}
+            {{ $documento->expiration_label }}
         </div>
 
     </div>
@@ -186,27 +186,7 @@ switch ($documento->type) {
                 </a>
 @endif
 
-<a
-    href="{{ asset('storage/' . $documento->file_path) }}"
-    target="_blank"
-    class="btn btn-outline-primary">
-
-    <i class="bi bi-file-earmark-pdf"></i>
-
-    Ver PDF
-
-</a>
-
-<a
-    href="{{ asset('storage/' . $documento->file_path) }}"
-    download
-    class="btn btn-outline-danger">
-
-    <i class="bi bi-download"></i>
-
-    Descargar PDF
-
-</a>
+@include('documentos.partials.file-actions')
 
             </div>
 

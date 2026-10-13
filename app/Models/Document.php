@@ -7,6 +7,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Document extends Model
 {
+    public const TYPES = ['Manual', 'Formato', 'Política', 'Procedimiento'];
+    public const STATUSES = ['Vigente', 'Actualizado', 'Vencido'];
+
+    public function getExpirationLabelAttribute(): string
+    {
+        return $this->expiration_date ? \Illuminate\Support\Carbon::parse($this->expiration_date)->format('d/m/Y') : 'Sin vencimiento';
+    }
+
     /**
      * Atributos asignables.
      */

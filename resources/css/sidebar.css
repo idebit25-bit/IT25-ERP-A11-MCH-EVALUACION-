@@ -6,7 +6,9 @@
 
     width: 230px;
 
-    min-height: 100vh;
+    flex-shrink: 0;
+
+    align-self: stretch;
 
     background-color: #111111;
 
@@ -136,4 +138,12 @@
 .sidebar-hidden{
 
     display: none;
+}
+.sidebar-section {
+    margin: 24px 14px 10px;
+    color: #a3a3a3;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .08em;
 }

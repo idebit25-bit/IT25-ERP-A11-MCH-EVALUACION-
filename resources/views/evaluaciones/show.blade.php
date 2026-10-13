@@ -3,6 +3,9 @@
 @section('title', 'Detalle de Evaluación')
 
 @section('content')
+@if(auth()->user()->hasModulePermission('evaluaciones.gestionar') || $evaluation->user_id == auth()->id() || $evaluation->evaluator_id == auth()->id())
+<a class="btn btn-outline-primary mb-3" href="{{ route('mis-evaluaciones.show', $evaluation->id) }}">Abrir seguimiento de la prueba</a>
+@endif
 
 <div class="container">
 

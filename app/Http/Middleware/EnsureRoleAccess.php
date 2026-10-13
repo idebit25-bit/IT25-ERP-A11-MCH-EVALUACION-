@@ -40,6 +40,8 @@ class EnsureRoleAccess
 
         abort_unless($user->hasAccessRole('Usuario'), 403);
 
+        if ($request->routeIs('notificaciones.*', 'mis-evaluaciones.*')) return $next($request);
+
         if ($request->isMethod('GET') && $request->is('/', 'dashboard')) {
             return redirect('/documentos');
         }
@@ -48,7 +50,7 @@ class EnsureRoleAccess
         abort_unless(
             in_array($request->method(), ['GET', 'HEAD'], true)
             && $request->route()->getControllerClass() === \App\Http\Controllers\DocumentoController::class
-            && in_array($action, ['index', 'show', 'manuales', 'formatos', 'politicas', 'procedimientos'], true),
+            && in_array($action, ['index', 'show', 'file', 'manuales', 'formatos', 'politicas', 'procedimientos'], true),
             403,
         );
 

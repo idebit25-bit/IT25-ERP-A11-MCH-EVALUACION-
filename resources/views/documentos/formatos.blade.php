@@ -239,7 +239,7 @@
     <td>{{ $formato->version }}</td>
 
     <td>
-        {{ \Carbon\Carbon::parse($formato->expiration_date)->format('d/m/Y') }}
+        {{ $formato->expiration_label }}
     </td>
 
     <td>

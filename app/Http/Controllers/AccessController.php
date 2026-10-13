@@ -12,10 +12,20 @@ use Illuminate\Validation\ValidationException;
 
 class AccessController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $filters = $request->validate(['search' => ['nullable', 'string', 'max:100']]);
+        $users = User::with('accessRoles')->orderBy('first_name')->orderBy('id');
+        if ($search = trim($filters['search'] ?? '')) {
+            $users->where(function ($query) use ($search) {
+                $query->where('first_name', 'like', '%'.$search.'%')
+                    ->orWhere('paternal_surname', 'like', '%'.$search.'%')
+                    ->orWhere('maternal_surname', 'like', '%'.$search.'%')
+                    ->orWhere('email', 'like', '%'.$search.'%');
+            });
+        }
         return view('configuracion.accesos', [
-            'users' => User::with('accessRoles')->orderBy('first_name')->paginate(20),
+            'users' => $users->paginate(5)->withQueryString(),
             'roles' => AccessRole::with('permissions')->where('guard_name', 'web')->whereIn('name', ['Super Admin', 'Admin', 'Usuario'])->get(),
             'permissions' => AccessRole::PERMISSIONS,
         ]);

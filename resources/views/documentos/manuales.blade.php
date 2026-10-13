@@ -238,7 +238,7 @@
     <td>{{ $manual->version }}</td>
 
     <td>
-        {{ \Carbon\Carbon::parse($manual->expiration_date)->format('d/m/Y') }}
+        {{ $manual->expiration_label }}
     </td>
 
     <td>

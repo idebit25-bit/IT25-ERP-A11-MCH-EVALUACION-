@@ -19,6 +19,7 @@
             <form
                 action="{{ url('/documentos') }}"
                 method="POST"
+                enctype="multipart/form-data"
             >
 
                 @csrf

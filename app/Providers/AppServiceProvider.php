@@ -20,5 +20,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Pagination\Paginator::useBootstrapFive();
+        \App\Models\Evaluation::observe(\App\Observers\EvaluationObserver::class);
     }
 }

@@ -238,7 +238,7 @@
     <td>{{ $politica->version }}</td>
 
     <td>
-        {{ \Carbon\Carbon::parse($politica->expiration_date)->format('d/m/Y') }}
+        {{ $politica->expiration_label }}
     </td>
 
     <td>

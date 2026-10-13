@@ -33,7 +33,7 @@
                 </span>
 
                 <h2>
-                    5
+                    {{ $activeCount }}
                 </h2>
 
             </div>
@@ -53,7 +53,7 @@
                 </span>
 
                 <h2>
-                    3
+                    {{ $pendingCount }}
                 </h2>
 
             </div>
@@ -73,7 +73,7 @@
                 </span>
 
                 <h2>
-                    12
+                    {{ $completedCount }}
                 </h2>
 
             </div>
@@ -190,7 +190,7 @@
                         class="form-select">
 
                         <option value="">
-                            Ordenar por
+                            Más recientes primero
                         </option>
 
                         <option
@@ -342,6 +342,10 @@
 
         @endswitch
 
+        @if($evaluation->status === 'completed')
+            <small class="d-block text-muted mt-1">{{ $evaluation->publication_label }}</small>
+        @endif
+
     </td>
 
     <td>
@@ -350,7 +354,8 @@
 
     </td>
 
-<td class="d-flex gap-1">
+<td>
+    <div class="d-flex gap-1">
 
     <a
         href="{{ route('evaluaciones.show', $evaluation->id) }}"
@@ -398,6 +403,7 @@
 
     </form>
 
+    </div>
 </td>
 
 </tr>

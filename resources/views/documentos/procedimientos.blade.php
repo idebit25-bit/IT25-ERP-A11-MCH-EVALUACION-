@@ -237,7 +237,7 @@
     <td>{{ $procedimiento->version }}</td>
 
     <td>
-        {{ \Carbon\Carbon::parse($procedimiento->expiration_date)->format('d/m/Y') }}
+        {{ $procedimiento->expiration_label }}
     </td>
 
     <td>

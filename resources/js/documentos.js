@@ -27,11 +27,11 @@ if (uploadModal) {
 
         const button = event.relatedTarget;
 
-        const tipo = button.getAttribute('data-tipo');
+        const tipo = button?.getAttribute('data-tipo');
 
         const select = document.getElementById('tipoDocumento');
 
-        if (select) {
+        if (select && tipo) {
 
             select.value = tipo;
 
@@ -39,6 +39,9 @@ if (uploadModal) {
 
     });
 
+    if (uploadModal.dataset.reopen === '1') {
+        window.bootstrap.Modal.getOrCreateInstance(uploadModal).show();
+    }
 }
 
 });

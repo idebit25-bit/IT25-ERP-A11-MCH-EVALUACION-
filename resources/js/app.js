@@ -12,6 +12,7 @@ import './documentos.js';
 import './reportes.js';
 import './usuarios.js';
 import './roles.js';
+import './refresh-lists.js';
 
 import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;

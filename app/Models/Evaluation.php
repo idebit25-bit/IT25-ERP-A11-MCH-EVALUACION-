@@ -6,6 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Evaluation extends Model
 {
+    public function getPublicationLabelAttribute(): string
+    {
+        if ($this->status !== 'completed') return $this->status_label;
+        if ($this->published_at) return 'Resultado publicado';
+        if ($this->validated_at) return 'Validada, pendiente de publicación';
+        if ($this->reviewed_at) return 'Revisada, pendiente de validación';
+        return 'Respondida, pendiente de revisión';
+    }
+
+    public function reviewer() { return $this->belongsTo(User::class, 'reviewed_by'); }
+    public function validator() { return $this->belongsTo(User::class, 'validated_by'); }
+    public function publisher() { return $this->belongsTo(User::class, 'published_by'); }
+
     // Tabla asociada
 
     protected $table = 'evaluations';

@@ -125,6 +125,7 @@ Route::get('/documentos/{id}/edit', [DocumentoController::class, 'edit']);
 // Actualizar documento
 Route::put('/documentos/{id}', [DocumentoController::class, 'update']);
 
+Route::get('/documentos/{id}/archivo', [DocumentoController::class, 'file'])->name('documentos.file');
 Route::get('/documentos/{id}', [DocumentoController::class, 'show']);
 Route::delete('/documentos/{id}', [DocumentoController::class, 'destroy']);
 
@@ -472,4 +473,15 @@ Route::get('/reportes/excel/{tipo}', [ReportesController::class, 'generarExcel']
     ->name('reportes.excel');
 
 
+Route::get('/notificaciones', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notificaciones.index');
+Route::patch('/notificaciones/leer-todas', [\App\Http\Controllers\NotificationController::class, 'readAll'])->name('notificaciones.readAll');
+Route::patch('/notificaciones/{id}/leer', [\App\Http\Controllers\NotificationController::class, 'read'])->name('notificaciones.read');
+
+Route::get('/mis-evaluaciones', [\App\Http\Controllers\MyEvaluationController::class, 'index'])->name('mis-evaluaciones.index');
+Route::get('/mis-evaluaciones/{id}', [\App\Http\Controllers\MyEvaluationController::class, 'show'])->name('mis-evaluaciones.show');
+Route::post('/mis-evaluaciones/{id}/respuestas', [\App\Http\Controllers\MyEvaluationController::class, 'submit'])->name('mis-evaluaciones.submit');
+Route::post('/mis-evaluaciones/{id}/reabrir', [\App\Http\Controllers\MyEvaluationController::class, 'reopen'])->name('mis-evaluaciones.reopen');
+Route::post('/mis-evaluaciones/{id}/revision', [\App\Http\Controllers\EvaluationPublicationController::class, 'review'])->name('mis-evaluaciones.review');
+Route::post('/mis-evaluaciones/{id}/validar', [\App\Http\Controllers\EvaluationPublicationController::class, 'validateResult'])->name('mis-evaluaciones.validate');
+Route::post('/mis-evaluaciones/{id}/publicar', [\App\Http\Controllers\EvaluationPublicationController::class, 'publish'])->name('mis-evaluaciones.publish');
 });

@@ -9,8 +9,6 @@ use App\Models\EvaluationPeriod;
 use App\Models\EvaluationTemplate;
 use App\Http\Requests\StoreEvaluationRequest;
 use App\Http\Requests\UpdateEvaluationRequest;
-use App\Models\EvaluationAnswer;
-use App\Models\EvaluationScaleValue;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -90,15 +88,18 @@ public function index()
 
     } else {
 
-        $evaluations->orderByDesc('evaluation_date');
+        $evaluations->orderByDesc('id');
 
     }
 
-    $evaluations = $evaluations->get();
+    $evaluations = $evaluations->orderByDesc('id')->get();
+    $activeCount = Evaluation::whereIn('status', ['draft', 'in_progress'])->count();
+    $pendingCount = Evaluation::where('status', 'draft')->count();
+    $completedCount = Evaluation::where('status', 'completed')->count();
 
     return view(
         'evaluaciones.index',
-        compact('evaluations')
+        compact('evaluations', 'activeCount', 'pendingCount', 'completedCount')
     );
 }
 
@@ -193,14 +194,18 @@ if ($evaluation->status !== 'draft') {
  */
 public function update(UpdateEvaluationRequest $request, $id)
 {
-    // Obtener evaluación
-    $evaluation = Evaluation::findOrFail($id);
-
-    // Obtener datos validados
-    $data = $request->validated();
-
-    // Actualizar evaluación
-    $evaluation->update($data);
+    DB::transaction(function () use ($request, $id) {
+        $evaluation = Evaluation::lockForUpdate()->findOrFail($id);
+        abort_unless($evaluation->status === 'draft', 409, 'Reabre la evaluacion antes de modificarla.');
+        $data = $request->validated();
+        if ($evaluation->answers()->exists()) {
+            abort_if($evaluation->user_id != $data['user_id'] || $evaluation->template_id != $data['template_id'], 422, 'Debe conservar el colaborador y la plantilla de las respuestas existentes.');
+            unset($data['observations']);
+        }
+        $before = $evaluation->only(array_keys($data));
+        $evaluation->update($data);
+        \App\Services\ActivityLogService::log(['module' => 'Evaluaciones', 'action' => 'Actualizar asignacion', 'record_id' => $evaluation->id, 'description' => json_encode(['anterior' => $before, 'nuevo' => $data], JSON_UNESCAPED_UNICODE)]);
+    });
 
     return redirect()
         ->route('evaluaciones.index')
@@ -251,19 +256,11 @@ public function store(StoreEvaluationRequest $request)
  */
 public function destroy($id)
 {
-    // Obtener evaluación
-    $evaluation = Evaluation::findOrFail($id);
-
-    // Validar que pueda eliminarse
-    if ($evaluation->status !== 'draft') {
-
-        return redirect()
-            ->route('evaluaciones.index')
-            ->with('error', 'La evaluación no puede eliminarse porque ya fue procesada.');
-    }
-
-    // Eliminar evaluación
-    $evaluation->delete();
+    DB::transaction(function () use ($id) {
+        $evaluation = Evaluation::lockForUpdate()->findOrFail($id);
+        abort_unless($evaluation->status === 'draft' && ! $evaluation->answers()->exists(), 409, 'No se puede eliminar una prueba procesada o con respuestas.');
+        $evaluation->delete();
+    });
 
     return redirect()
         ->route('evaluaciones.index')
@@ -275,18 +272,7 @@ public function destroy($id)
  */
 public function apply($id)
 {
-    $evaluation = Evaluation::with([
-        'user',
-        'evaluator',
-        'period',
-        'evaluationType',
-        'template.questions.category',
-        'template.questions.competency',
-        'template.questions.scale',
-        'template.questions.scale.values',
-    ])->findOrFail($id);
-
-    return view('evaluaciones.apply', compact('evaluation'));
+    return redirect()->route('mis-evaluaciones.show', $id);
 }
 
 /**
@@ -294,73 +280,8 @@ public function apply($id)
  */
 public function submit(Request $request, $id)
 {
-    // Obtener evaluación
-    $evaluation = Evaluation::findOrFail($id);
-
-    // Obtener respuestas enviadas
-    $answers = $request->input('answers', []);
-
-    // Obtener observaciones
-$observations = $request->input('observations');
-
-    DB::transaction(function () use ($evaluation, $answers) {
-
-        // Eliminar respuestas anteriores
-        EvaluationAnswer::where(
-            'evaluation_id',
-            $evaluation->id
-        )->delete();
-
-        // Guardar respuestas
-        foreach ($answers as $questionId => $scaleValueId) {
-
-            // Obtener valor seleccionado
-            $scaleValue = EvaluationScaleValue::findOrFail($scaleValueId);
-
-            // Registrar respuesta
-            EvaluationAnswer::create([
-                'evaluation_id' => $evaluation->id,
-                'question_id'   => $questionId,
-                'answer'        => $scaleValue->label,
-                'numeric_value' => $scaleValue->numeric_value,
-                'comments'      => null,
-            ]);
-        }
-
-    });
-
-    // Guardar observaciones
-$evaluation->observations = $observations;
-$evaluation->save();
-
-    // Calcular la calificación final
-$totalScore = $this->calculateScore($evaluation);
-
-// Actualizar la evaluación
-$evaluation->update([
-    'total_score' => $totalScore,
-    'status' => 'completed',
-]);
-
-    return redirect()
-        ->route('evaluaciones.index')
-        ->with(
-            'success',
-            'La evaluación se guardó correctamente.'
-        );
+    return app(MyEvaluationController::class)->submit($request, (int) $id);
 }
 
-
-/**
- * Calcular la calificación de una evaluación.
- */
-private function calculateScore(Evaluation $evaluation): float
-{
-    // Obtener promedio de las respuestas
-    return (float) EvaluationAnswer::where(
-        'evaluation_id',
-        $evaluation->id
-    )->avg('numeric_value');
-}
 
 }

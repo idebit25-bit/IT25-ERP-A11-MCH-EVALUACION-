@@ -421,7 +421,7 @@
 
     <td>{{ $documento->version }}</td>
 
-    <td>{{ \Carbon\Carbon::parse($documento->expiration_date)->format('d/m/Y') }}</td>
+    <td>{{ $documento->expiration_label }}</td>
 
     <td>{{ $documento->created_at?->format('d/m/Y') }}</td>
 

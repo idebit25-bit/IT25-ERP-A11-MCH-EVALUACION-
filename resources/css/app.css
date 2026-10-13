@@ -58,3 +58,12 @@ body{
     background: transparent;
 }
 
+
+.main-container + .footer {
+    margin-top: 0;
+}
+
+.content {
+    min-width: 0;
+}
+
