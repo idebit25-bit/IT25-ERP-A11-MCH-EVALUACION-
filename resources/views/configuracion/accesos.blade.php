@@ -8,7 +8,7 @@
         'Usuario' => ['icon' => 'bi-person', 'text' => 'Consulta documentos y participa en sus evaluaciones como evaluado o evaluador.'],
     ];
     $permissionInfo = [
-        'evaluaciones.gestionar' => ['bi-clipboard-check', 'Evaluaciones', 'Gestionar evaluaciones, validar y publicar resultados revisados.'],
+        'evaluaciones.gestionar' => ['bi-clipboard-check', 'Evaluaciones', 'Gestionar evaluaciones y planes de mejora; validar y publicar resultados revisados.'],
         'documentos.gestionar' => ['bi-folder', 'Documentos', 'Registrar, editar, reemplazar PDFs y eliminar documentos.'],
         'colaboradores.gestionar' => ['bi-people', 'Colaboradores', 'Administrar colaboradores sin modificar cuentas privilegiadas.'],
         'reportes.consultar' => ['bi-bar-chart', 'Reportes', 'Consultar y exportar reportes del módulo.'],
@@ -17,10 +17,16 @@
 @endphp
 <div class="content-wrapper access-page">
     <div class="dashboard-header d-flex justify-content-between align-items-start gap-3 flex-wrap">
-        <div><h1>Roles y permisos</h1><p>Define qué puede hacer cada rol y administra el acceso de las cuentas.</p></div>
+        <div><h1>Usuarios y permisos</h1><p>Administra cuentas, contraseñas, roles y permisos desde un solo lugar.</p></div>
         <span class="badge text-bg-light border p-2"><i class="bi bi-shield-lock me-1" aria-hidden="true"></i> Solo superadministradores</span>
     </div>
 
+    @if(request('user_id'))
+        <div class="alert alert-light border d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span>Estás administrando la cuenta seleccionada desde el expediente.</span>
+            <a href="{{ route('configuracion.roles') }}" class="btn btn-outline-secondary btn-sm">Ver todas las cuentas</a>
+        </div>
+    @endif
     <div class="row g-3 mb-4">
         @foreach($roleInfo as $name => $info)
             <div class="col-lg-4">
@@ -91,7 +97,7 @@
                     <div>
                     @forelse($users as $user)
                         @php($isOld = (string) old('_access_user') === (string) $user->id)
-                        <details class="access-account mb-3" @if($isOld) open @endif>
+                        <details class="access-account mb-3" @if($isOld || request('user_id') == $user->id) open @endif>
                             <summary>
                                 <span class="access-avatar" aria-hidden="true"><i class="bi bi-person"></i></span>
                                 <span class="access-account-name">
@@ -108,6 +114,7 @@
                             <form action="{{ route('accesos.update', $user->id) }}" method="POST" class="access-account-form">
                                 @csrf @method('PUT')
                                 <input type="hidden" name="_access_user" value="{{ $user->id }}">
+                                <a class="btn btn-outline-secondary btn-sm mb-3" href="{{ route('colaboradores.show', $user->id) }}">Ver expediente del colaborador</a>
                                 @if($user->id === auth()->id())
                                     <div class="alert alert-light border small">Esta es tu cuenta. Debes conservar tu rol de superadministrador y el estado activo para mantener el acceso.</div>
                                 @endif
@@ -128,7 +135,7 @@
                                             <option value="active" @selected(($isOld ? old('status') : $user->status) === 'active')>Activo</option>
                                             <option value="inactive" @selected(($isOld ? old('status') : $user->status) === 'inactive')>Inactivo</option>
                                         </select>
-                                        <div class="form-text">Una cuenta inactiva no puede acceder al sistema.</div>
+                                        <div class="form-text">Este estado también se refleja en Colaboradores. Una cuenta inactiva no puede acceder al sistema.</div>
                                     </div>
                                     <div class="col-12"><hr class="my-1"><p class="small text-muted mt-3 mb-0">Cambiar contraseña es opcional. Deja ambos campos vacíos para conservar la actual.</p></div>
                                     <div class="col-md-6">

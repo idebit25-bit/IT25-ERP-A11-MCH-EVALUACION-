@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Evaluation extends Model
 {
+    protected function casts(): array
+    {
+        return ['comparison_snapshot' => 'array'];
+    }
+
     public function getPublicationLabelAttribute(): string
     {
         if ($this->status !== 'completed') return $this->status_label;

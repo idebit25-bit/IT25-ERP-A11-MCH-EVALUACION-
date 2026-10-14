@@ -1,0 +1,32 @@
+.improvement-detail .plan-action > summary,
+.improvement-detail .plan-management > summary,
+.improvement-detail #plan-history > summary {
+    cursor: pointer;
+    border-radius: 12px;
+}
+.improvement-detail .plan-action > summary {
+    list-style: none;
+}
+.improvement-detail .plan-action > summary::-webkit-details-marker {
+    display: none;
+}
+.improvement-detail summary:focus-visible {
+    outline: 2px solid #245cf4;
+    outline-offset: 3px;
+}
+.improvement-detail .plan-action > summary:hover {
+    background: #f5f7ff;
+}
+.improvement-detail .plan-action-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+}
+.improvement-detail .plan-action-chevron {
+    flex-shrink: 0;
+    transition: transform .15s ease;
+}
+.improvement-detail .plan-action[open] .plan-action-chevron {
+    transform: rotate(180deg);
+}

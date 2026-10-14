@@ -38,6 +38,29 @@ SQL);
         return $user;
     }
 
+    public function test_legacy_users_redirects_and_selected_account_opens_in_unified_screen(): void
+    {
+        $this->actingAs($this->super)->get('/configuracion/usuarios')->assertRedirect(route('configuracion.roles'));
+        $this->get('/configuracion/roles?user_id='.$this->employee->id)->assertOk()->assertSee('Usuarios y permisos')
+            ->assertSee('Ver todas las cuentas')->assertViewHas('users', fn ($users) => $users->total() === 1 && $users->first()->id === $this->employee->id);
+        $this->getJson('/configuracion/roles?user_id=99999')->assertUnprocessable();
+        $this->actingAs($this->admin)->get('/configuracion/usuarios')->assertForbidden();
+        $this->get('/configuracion/roles?user_id='.$this->employee->id)->assertForbidden();
+    }
+
+    public function test_collaborator_password_changes_are_rejected_by_validation(): void
+    {
+        $request = new \App\Http\Requests\UpdateUserRequest;
+        $route = new \Illuminate\Routing\Route('PUT', 'colaboradores/{id}', fn () => null);
+        $route->bind(\Illuminate\Http\Request::create('/colaboradores/'.$this->employee->id, 'PUT'));
+        $request->setRouteResolver(fn () => $route);
+        $rules = $request->rules();
+        $validator = validator(['password' => 'NuevaClave123', 'password_confirmation' => 'NuevaClave123'],
+            array_intersect_key($rules, array_flip(['password', 'password_confirmation'])));
+        $this->assertTrue($validator->fails());
+        $this->assertTrue($validator->errors()->has('password'));
+    }
+
     public function test_access_search_filters_accounts_and_handles_empty_results(): void
     {
         $this->actingAs($this->super)->get('/configuracion/roles?search=employee%40test.com')
@@ -163,7 +186,7 @@ SQL);
 
     public function test_discarded_workflow_routes_and_permissions_are_absent(): void
     {
-        foreach (['evaluaciones.asignar', 'evaluaciones.historial', 'evaluaciones.validar', 'evaluaciones.publicar', 'planes.index'] as $name) {
+        foreach (['evaluaciones.asignar', 'evaluaciones.historial', 'evaluaciones.validar', 'evaluaciones.publicar'] as $name) {
             $this->assertNull(app('router')->getRoutes()->getByName($name));
         }
         $this->assertArrayNotHasKey('evaluaciones.validar', AccessRole::PERMISSIONS);

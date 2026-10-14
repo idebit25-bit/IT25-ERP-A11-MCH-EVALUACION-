@@ -31,6 +31,7 @@
 
             </div>
 
+            @if(!isset($user) || !$user->exists)
             <div class="col-md-3 mb-3">
 
                 <label for="password" class="form-label">
@@ -65,6 +66,14 @@
 
             </div>
 
+            @else
+                <div class="col-md-6 mb-3">
+                    <p class="text-muted">Los cambios de contraseña y rol se realizan en Usuarios y permisos por el superadministrador.</p>
+                    @if(auth()->user()->hasAccessRole('Super Admin'))
+                        <a class="btn btn-outline-primary" href="{{ route('configuracion.roles', ['user_id' => $user->id]) }}">Administrar acceso</a>
+                    @endif
+                </div>
+            @endif
         </div>
 
     </div>

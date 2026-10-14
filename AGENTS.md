@@ -10,3 +10,7 @@
 - Se autorizó el listado personal Mis evaluaciones: consultar asignaciones propias como evaluado o evaluador. Se autorizó que responda el colaborador evaluado; el evaluador asignado supervisa y consulta lo enviado. Super Admin puede reabrir con motivo y copia de respuestas anteriores en bitácora; no responde por terceros.
 
 - Se autorizó revisión por el evaluador asignado y validación/publicación por Admin con evaluaciones.gestionar o Super Admin. Una reapertura anula esas etapas y conserva sus antecedentes en bitácora.
+
+- Se autorizó historial e indicadores: Reportes para Super Admin/Admin con reportes.consultar; historial propio desde Mis evaluaciones. Comparar solo resultados completados y publicados con referencias compatibles de preguntas y escalas guardadas al enviar. No reconstruir referencias antiguas con el catálogo actual. La asignación por perfiles/grupos sigue retirada por solicitud del usuario.
+
+- Se autorizaron planes de mejora: un plan por evaluación publicada, varias acciones con responsables y fechas, avances comentados y cierre/cancelación/reapertura por Super Admin o Admin con evaluaciones.gestionar. El colaborador y responsables consultan el plan; cada responsable actualiza solo sus acciones. Conservar seguimiento y bitácora, sin borrado de antecedentes.

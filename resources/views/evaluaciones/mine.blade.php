@@ -7,6 +7,7 @@
         <p>Consulta las evaluaciones en las que participas como colaborador evaluado o evaluador.</p>
     </div>
 
+    <a href="{{ route('mis-evaluaciones.history') }}" class="btn btn-outline-primary mb-4"><i class="bi bi-graph-up" aria-hidden="true"></i> Mi historial de desempeño</a>
     <div class="row g-3 mb-4">
         @foreach(['Pendientes' => $pending, 'Completadas' => $completed, 'Canceladas' => $cancelled] as $label => $count)
             <div class="col-sm-4">

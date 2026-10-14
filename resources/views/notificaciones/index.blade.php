@@ -13,7 +13,9 @@
             <div class="list-group-item p-3">
                 <p class="mb-1 {{ $notification->read_at ? '' : 'fw-bold' }}">{{ $notification->data['message'] ?? 'Aviso del sistema' }}</p>
                 <small class="text-muted">{{ $notification->created_at->format('d/m/Y H:i') }}</small>
-                @if(isset($notification->data['evaluation_id']))
+                @if(isset($notification->data['plan_id']))
+                    <a class="d-block mt-2" href="{{ route('planes.show', $notification->data['plan_id']) }}">Consultar plan de mejora</a>
+                @elseif(isset($notification->data['evaluation_id']))
                     <a class="d-block mt-2" href="{{ route('mis-evaluaciones.show', $notification->data['evaluation_id']) }}">Consultar evaluación</a>
                 @endif
                 @unless($notification->read_at)

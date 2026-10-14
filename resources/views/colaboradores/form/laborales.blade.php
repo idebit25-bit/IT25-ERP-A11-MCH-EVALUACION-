@@ -128,6 +128,7 @@
 
                 </select>
 
+                <div class="form-text">Este estado también controla el acceso al sistema: desactivar al colaborador impide que inicie sesión.</div>
                 @error('status')
                     <div class="invalid-feedback">
                         {{ $message }}

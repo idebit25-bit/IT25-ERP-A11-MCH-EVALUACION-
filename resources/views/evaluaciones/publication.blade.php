@@ -17,7 +17,10 @@
             <p class="text-muted mb-0">Recibirás una notificación cuando tu resultado esté publicado. Por ahora no necesitas realizar ninguna acción.</p>
         @endif
 
-        @if(auth()->id() == $evaluation->evaluator_id && !$evaluation->reviewed_at)
+        @if($evaluation->answers->isEmpty() && !$evaluation->reviewed_at)
+            <div class="alert alert-warning mt-3">Esta evaluación figura como completada, pero no tiene respuestas guardadas. No se puede confirmar la revisión. Un Super Admin debe reabrirla con un motivo para que el colaborador pueda responderla.</div>
+        @endif
+        @if(auth()->id() == $evaluation->evaluator_id && !$evaluation->reviewed_at && $evaluation->answers->isNotEmpty())
             <form action="{{ route('mis-evaluaciones.review', $evaluation->id) }}" method="POST" onsubmit="return confirm('¿Confirmar la revisión y enviarla a validación?');">
                 @csrf
                 <label for="review-notes" class="form-label">Observaciones de la revisión</label>

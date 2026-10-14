@@ -15,6 +15,7 @@
     <ul>
         <li><a href="{{ route('mis-evaluaciones.index') }}" class="{{ request()->routeIs('mis-evaluaciones.index') ? 'active' : '' }}"><i class="bi bi-clipboard-check"></i> Mis evaluaciones</a></li>
         <li><a href="{{ url('/documentos') }}" class="{{ request()->is('documentos', 'documentos/*') ? 'active' : '' }}"><i class="bi bi-folder"></i> Documentos</a></li>
+        <li><a href="{{ route('planes.index') }}" class="{{ request()->routeIs('planes.*') ? 'active' : '' }}"><i class="bi bi-list-check"></i> Planes de mejora</a></li>
     </ul>
 
     @if(auth()->user()->hasModulePermission('colaboradores.gestionar') || auth()->user()->hasModulePermission('evaluaciones.gestionar') || auth()->user()->hasModulePermission('reportes.consultar'))
@@ -36,7 +37,7 @@
         <p class="sidebar-section">Administración</p>
         <ul>
             @if(auth()->user()->hasAccessRole('Super Admin'))
-                <li><a href="{{ route('configuracion.roles') }}" class="{{ request()->routeIs('configuracion.roles') ? 'active' : '' }}"><i class="bi bi-shield-lock"></i> Roles y permisos</a></li>
+                <li><a href="{{ route('configuracion.roles') }}" class="{{ request()->routeIs('configuracion.roles') ? 'active' : '' }}"><i class="bi bi-shield-lock"></i> Usuarios y permisos</a></li>
             @endif
             @if(auth()->user()->hasModulePermission('configuracion.evaluaciones'))
                 <li><a href="{{ url('/configuracion') }}" class="{{ request()->is('configuracion', 'configuracion/*') && !request()->routeIs('configuracion.roles') ? 'active' : '' }}"><i class="bi bi-gear"></i> Configuración</a></li>

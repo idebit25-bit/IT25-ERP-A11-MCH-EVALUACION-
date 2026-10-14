@@ -38,38 +38,6 @@
         <div class="col-md-3 mb-3">
 
             <a
-                href="{{ route('configuracion.usuarios') }}"
-                class="text-decoration-none">
-
-                <div class="card border-0 dashboard-card">
-
-                    <div class="card-body text-center">
-
-                        <i class="bi bi-people text-primary fs-1"></i>
-
-                        <h5 class="mt-3">
-
-                            Usuarios
-
-                        </h5>
-
-                        <p class="card-text">
-
-                            Administración de usuarios del sistema.
-
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </a>
-
-        </div>
-
-        <div class="col-md-3 mb-3">
-
-            <a
                 href="{{ route('configuracion.roles') }}"
                 class="text-decoration-none">
 
@@ -81,7 +49,7 @@
 
                         <h5 class="mt-3">
 
-                            Roles y permisos
+                            Usuarios y permisos
 
                         </h5>
 

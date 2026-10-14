@@ -45,7 +45,7 @@
             <div class="card"><div class="card-body">
                 <h2 class="h5">Respuestas del colaborador</h2>
                 @foreach($evaluation->answers as $answer)
-                    <p><strong>{{ $answer->question?->question ?? 'Pregunta registrada' }}</strong><br>{{ $answer->answer }}</p>
+                    <p><strong>{{ collect($evaluation->comparison_snapshot['questions'] ?? [])->firstWhere('id', $answer->question_id)['text'] ?? $answer->question?->question ?? 'Pregunta registrada' }}</strong><br>{{ $answer->answer }}</p>
                 @endforeach
                 <p><strong>Promedio registrado:</strong> {{ number_format($evaluation->total_score, 2) }}</p>
                 <p><strong>Observaciones:</strong> {{ $evaluation->observations ?: 'Sin observaciones' }}</p>
@@ -54,6 +54,11 @@
     @endif
 
     @include('evaluaciones.publication')
+
+    @if($evaluation->status === 'completed' && $evaluation->published_at && auth()->user()->hasModulePermission('evaluaciones.gestionar'))
+        <a class="btn btn-outline-primary mt-4" href="{{ route('planes.create', ['evaluation_id' => $evaluation->id]) }}"><i class="bi bi-list-check"></i> Crear plan de mejora</a>
+    @endif
+    <a class="btn btn-outline-secondary mt-4" href="{{ route('planes.index', ['evaluation_id' => $evaluation->id]) }}">Consultar planes de esta evaluación</a>
 
     @if(auth()->user()->hasAccessRole('Super Admin') && $evaluation->status === 'completed')
         <form class="card p-3 mt-4" method="POST" action="{{ route('mis-evaluaciones.reopen', $evaluation->id) }}" onsubmit="return confirm('¿Reabrir esta evaluación para que el colaborador corrija sus respuestas?');">

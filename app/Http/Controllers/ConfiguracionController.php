@@ -82,17 +82,7 @@ class ConfiguracionController extends Controller
 
     public function usuarios()
     {
-        $usuarios = \App\Models\User::with('accessRoles')->orderBy('id')->get()->map(fn ($user) => [
-            'id' => $user->id,
-            'nombre' => $user->full_name,
-            'usuario' => $user->username ?? $user->email,
-            'correo' => $user->email,
-            'rol' => $user->accessRoles->pluck('name')->implode(', ') ?: 'Sin rol',
-            'estado' => $user->status === 'active' ? 'Activo' : 'Inactivo',
-            'ultimoAcceso' => '-',
-        ])->all();
-
-        return view('configuracion.usuarios', compact('usuarios'));
+        return redirect()->route('configuracion.roles');
     }
 
 public function roles()

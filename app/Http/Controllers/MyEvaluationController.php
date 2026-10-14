@@ -61,6 +61,7 @@ class MyEvaluationController extends Controller
                 $value = $questions->firstWhere('id', $questionId)->scale->values->firstWhere('id', $valueId);
                 $evaluation->answers()->create(['question_id' => $questionId, 'answer' => $value->label, 'numeric_value' => $value->numeric_value]);
             }
+            $evaluation->forceFill(['comparison_snapshot' => app(\App\Services\EvaluationHistoryService::class)->snapshot($evaluation, $questions, $selected->keys()->all())]);
             $evaluation->update(['observations' => $data['observations'] ?? null, 'total_score' => (float) $evaluation->answers()->avg('numeric_value'), 'status' => 'completed']);
             ActivityLogService::log(['module' => 'Evaluaciones', 'action' => 'Enviar respuestas', 'record_id' => $evaluation->id, 'description' => 'El colaborador envió sus respuestas.']);
         });
@@ -80,7 +81,7 @@ class MyEvaluationController extends Controller
             ActivityLogService::log(['module' => 'Evaluaciones', 'action' => 'Reabrir evaluación', 'record_id' => $id,
                 'description' => json_encode(['motivo' => $data['reason'], 'calificacion_anterior' => $evaluation->total_score, 'observaciones_anteriores' => $evaluation->observations, 'respuestas_anteriores' => $evaluation->answers()->get(['question_id', 'answer', 'numeric_value'])->toArray()], JSON_UNESCAPED_UNICODE)]);
             ActivityLogService::log(['module' => 'Evaluaciones', 'action' => 'Anular revisión y publicación', 'record_id' => $id,
-                'description' => json_encode($evaluation->only(['reviewed_at', 'reviewed_by', 'review_notes', 'validated_at', 'validated_by', 'published_at', 'published_by']), JSON_UNESCAPED_UNICODE)]);
+                'description' => json_encode($evaluation->only(['reviewed_at', 'reviewed_by', 'review_notes', 'validated_at', 'validated_by', 'published_at', 'published_by', 'comparison_snapshot']), JSON_UNESCAPED_UNICODE)]);
             $evaluation->forceFill(['status' => 'draft', 'total_score' => 0, 'reviewed_at' => null, 'reviewed_by' => null, 'review_notes' => null, 'validated_at' => null, 'validated_by' => null, 'published_at' => null, 'published_by' => null])->save();
         });
         return redirect()->route('mis-evaluaciones.show', $id)->with('success', 'Evaluación reabierta. El colaborador puede corregir y enviar nuevamente sus respuestas.');

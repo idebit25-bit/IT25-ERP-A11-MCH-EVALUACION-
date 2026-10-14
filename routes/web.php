@@ -477,7 +477,20 @@ Route::get('/notificaciones', [\App\Http\Controllers\NotificationController::cla
 Route::patch('/notificaciones/leer-todas', [\App\Http\Controllers\NotificationController::class, 'readAll'])->name('notificaciones.readAll');
 Route::patch('/notificaciones/{id}/leer', [\App\Http\Controllers\NotificationController::class, 'read'])->name('notificaciones.read');
 
+Route::get('/planes-de-mejora', [\App\Http\Controllers\ImprovementPlanController::class, 'index'])->name('planes.index');
+Route::get('/planes-de-mejora/create', [\App\Http\Controllers\ImprovementPlanController::class, 'create'])->name('planes.create');
+Route::post('/planes-de-mejora', [\App\Http\Controllers\ImprovementPlanController::class, 'store'])->name('planes.store');
+Route::get('/planes-de-mejora/{id}', [\App\Http\Controllers\ImprovementPlanController::class, 'show'])->whereNumber('id')->name('planes.show');
+Route::put('/planes-de-mejora/{id}', [\App\Http\Controllers\ImprovementPlanController::class, 'update'])->whereNumber('id')->name('planes.update');
+Route::post('/planes-de-mejora/{id}/acciones', [\App\Http\Controllers\ImprovementPlanController::class, 'addAction'])->whereNumber('id')->name('planes.actions.store');
+Route::put('/planes-de-mejora/{id}/acciones/{actionId}', [\App\Http\Controllers\ImprovementPlanController::class, 'updateAction'])->whereNumber(['id', 'actionId'])->name('planes.actions.update');
+Route::post('/planes-de-mejora/{id}/acciones/{actionId}/avances', [\App\Http\Controllers\ImprovementPlanController::class, 'progress'])->whereNumber(['id', 'actionId'])->name('planes.progress');
+Route::patch('/planes-de-mejora/{id}/estado', [\App\Http\Controllers\ImprovementPlanController::class, 'transition'])->whereNumber('id')->name('planes.transition');
+
 Route::get('/mis-evaluaciones', [\App\Http\Controllers\MyEvaluationController::class, 'index'])->name('mis-evaluaciones.index');
+Route::get('/mis-evaluaciones/historial', [\App\Http\Controllers\EvaluationHistoryController::class, 'index'])->name('mis-evaluaciones.history');
+Route::get('/reportes/historial', [\App\Http\Controllers\EvaluationHistoryController::class, 'index'])->name('reportes.history');
+Route::get('/reportes/historial/{id}', [\App\Http\Controllers\EvaluationHistoryController::class, 'show'])->whereNumber('id')->name('reportes.history.show');
 Route::get('/mis-evaluaciones/{id}', [\App\Http\Controllers\MyEvaluationController::class, 'show'])->name('mis-evaluaciones.show');
 Route::post('/mis-evaluaciones/{id}/respuestas', [\App\Http\Controllers\MyEvaluationController::class, 'submit'])->name('mis-evaluaciones.submit');
 Route::post('/mis-evaluaciones/{id}/reabrir', [\App\Http\Controllers\MyEvaluationController::class, 'reopen'])->name('mis-evaluaciones.reopen');

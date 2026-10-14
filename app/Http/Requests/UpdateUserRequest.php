@@ -63,7 +63,8 @@ class UpdateUserRequest extends FormRequest
                 Rule::unique('users', 'username')->ignore($user),
             ],
 
-            'password' => 'nullable|string|min:8|confirmed',
+            'password' => 'prohibited',
+            'password_confirmation' => 'prohibited',
 
             // Personales
             'gender' => 'nullable|string|max:255',

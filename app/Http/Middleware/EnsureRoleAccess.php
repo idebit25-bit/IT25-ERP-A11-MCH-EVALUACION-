@@ -40,7 +40,7 @@ class EnsureRoleAccess
 
         abort_unless($user->hasAccessRole('Usuario'), 403);
 
-        if ($request->routeIs('notificaciones.*', 'mis-evaluaciones.*')) return $next($request);
+        if ($request->routeIs('notificaciones.*', 'mis-evaluaciones.*', 'planes.*')) return $next($request);
 
         if ($request->isMethod('GET') && $request->is('/', 'dashboard')) {
             return redirect('/documentos');

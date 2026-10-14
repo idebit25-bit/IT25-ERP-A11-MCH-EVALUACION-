@@ -146,12 +146,7 @@ public function update(UpdateUserRequest $request, $id)
 {
     $user = User::findOrFail($id);
 
-    $data = $request->validated();
-
-    // Si no se captura una nueva contraseña, conservar la actual
-    if (empty($data['password'])) {
-        unset($data['password']);
-    }
+    $data = $request->safe()->except(['password', 'password_confirmation']);
 
     $user->update($data);
 

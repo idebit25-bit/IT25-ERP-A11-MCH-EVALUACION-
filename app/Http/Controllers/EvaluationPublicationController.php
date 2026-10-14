@@ -12,10 +12,12 @@ class EvaluationPublicationController extends Controller
 {
     public function review(Request $request, int $id)
     {
-        DB::transaction(function () use ($request, $id) {
+        $problem = DB::transaction(function () use ($request, $id) {
             $evaluation = Evaluation::lockForUpdate()->findOrFail($id);
             abort_unless($evaluation->evaluator_id == $request->user()->id, 403, 'Solo el evaluador asignado puede registrar la revisión.');
-            abort_unless($evaluation->status === 'completed' && ! $evaluation->reviewed_at && $evaluation->answers()->exists(), 409, 'La evaluación debe estar respondida y pendiente de revisión.');
+            if ($evaluation->status !== 'completed') return 'La evaluación aún no está completada o fue reabierta. El colaborador debe enviar sus respuestas antes de revisarla.';
+            if ($evaluation->reviewed_at) return 'La revisión ya fue registrada. Consulta el estado actualizado de la evaluación.';
+            if (! $evaluation->answers()->exists()) return 'La evaluación figura como completada, pero no tiene respuestas guardadas. Solicita al Super Admin que la reabra con un motivo para que el colaborador pueda responderla.';
             $data = $request->validate(['review_notes' => ['required', 'string', 'max:2000']], [
                 'review_notes.required' => 'Escribe las observaciones de tu revisión.',
                 'review_notes.max' => 'Las observaciones no deben superar los 2000 caracteres.',
@@ -26,7 +28,11 @@ class EvaluationPublicationController extends Controller
                 ->with('accessRoles.permissions')->get()->filter(fn ($user) => $user->hasModulePermission('evaluaciones.gestionar'))
                 ->each(fn ($user) => $user->notify(new EvaluationNotification($id, 'La evaluación #'.$id.' fue revisada y está pendiente de validación.')));
         });
-        return back()->with('success', 'Revisión registrada. El resultado está pendiente de validación administrativa.');
+        if ($problem) {
+            if ($request->expectsJson()) abort(409, $problem);
+            return redirect()->route('mis-evaluaciones.show', $id)->withErrors(['review_notes' => $problem])->withInput($request->only('review_notes'));
+        }
+        return redirect()->route('mis-evaluaciones.show', $id)->with('success', 'Revisión registrada. El resultado está pendiente de validación administrativa.');
     }
 
     public function validateResult(Request $request, int $id)

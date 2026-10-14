@@ -19,6 +19,8 @@
 
     </div>
 
+    <a href="{{ route('reportes.history') }}" class="btn btn-outline-primary mb-4"><i class="bi bi-graph-up" aria-hidden="true"></i> Historial e indicadores de desempeño</a>
+
     <!-- Tipos de reportes -->
 
     <div class="row mb-4">

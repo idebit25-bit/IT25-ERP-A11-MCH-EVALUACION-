@@ -35,6 +35,7 @@ CREATE TABLE evaluation_answers (id INTEGER PRIMARY KEY, evaluation_id INTEGER, 
 SQL);
         (require database_path('migrations/2026_10_08_000002_create_notifications_table.php'))->up();
         (require database_path('migrations/2026_10_12_000001_add_evaluation_publication.php'))->up();
+        (require database_path('migrations/2026_10_13_000001_add_evaluation_comparison_snapshot.php'))->up();
         foreach (['employee' => 'Usuario', 'evaluator' => 'Usuario', 'super' => 'Super Admin'] as $property => $roleName) {
             $roleId = DB::table('roles')->where('name', $roleName)->value('id')
                 ?? DB::table('roles')->insertGetId(['name' => $roleName, 'guard_name' => 'web']);
@@ -58,6 +59,11 @@ SQL);
         $this->actingAs($this->employee)->get('/mis-evaluaciones/1')->assertOk()->assertSee('Enviar respuestas');
         $this->post('/mis-evaluaciones/1/respuestas', ['answers' => [1 => 1]])->assertRedirect('/mis-evaluaciones/1');
         $this->assertDatabaseHas('evaluations', ['id' => 1, 'status' => 'completed', 'total_score' => 4]);
+        $snapshot = \App\Models\Evaluation::find(1)->comparison_snapshot;
+        $this->assertSame('Pregunta de prueba', $snapshot['questions'][0]['text']);
+        $this->assertSame([1], $snapshot['answered_ids']);
+        DB::table('evaluation_questions')->where('id', 1)->update(['question' => 'Enunciado actualizado']);
+        $this->assertSame('Pregunta de prueba', \App\Models\Evaluation::find(1)->comparison_snapshot['questions'][0]['text']);
         $this->assertSame(1, $this->evaluator->notifications()->count());
         $this->post('/mis-evaluaciones/1/respuestas', ['answers' => [1 => 1]])->assertStatus(409);
         $this->post('/mis-evaluaciones/1/reabrir', ['reason' => 'Corregir las respuestas'])->assertForbidden();
@@ -81,7 +87,7 @@ SQL);
         $this->post('/mis-evaluaciones/1/revision', ['review_notes' => 'No es el evaluador'])->assertForbidden();
         $this->actingAs($this->evaluator)->postJson('/mis-evaluaciones/1/revision', [])->assertUnprocessable();
         $this->post('/mis-evaluaciones/1/revision', ['review_notes' => 'Revisión reservada de prueba'])->assertRedirect();
-        $this->post('/mis-evaluaciones/1/revision', ['review_notes' => 'Revisión duplicada'])->assertStatus(409);
+        $this->post('/mis-evaluaciones/1/revision', ['review_notes' => 'Revisión duplicada'])->assertRedirect('/mis-evaluaciones/1')->assertSessionHasErrors('review_notes');
         $this->post('/mis-evaluaciones/1/validar')->assertForbidden();
         $this->actingAs($this->employee)->get('/mis-evaluaciones/1')->assertDontSee('Revisión reservada de prueba')->assertDontSee('Promedio registrado:');
         $this->actingAs($this->super)->post('/mis-evaluaciones/1/validar')->assertRedirect();
@@ -109,6 +115,21 @@ SQL);
         $this->actingAs($this->super->fresh())->get('/mis-evaluaciones/1')->assertOk()->assertSee('Validar resultado');
         $this->post('/mis-evaluaciones/1/validar')->assertRedirect();
         $this->post('/mis-evaluaciones/1/publicar')->assertRedirect();
+    }
+
+    public function test_completed_evaluation_without_answers_has_no_review_form_and_returns_an_explanation(): void
+    {
+        DB::table('evaluations')->where('id', 1)->update(['status' => 'completed']);
+        $this->actingAs($this->evaluator)->get('/mis-evaluaciones/1')->assertOk()
+            ->assertSee('no tiene respuestas guardadas')->assertDontSee('id="review-notes"', false);
+        $this->post('/mis-evaluaciones/1/revision', ['review_notes' => 'Intento de revision'])
+            ->assertRedirect('/mis-evaluaciones/1')->assertSessionHasErrors('review_notes');
+        $this->assertDatabaseHas('evaluations', ['id' => 1, 'reviewed_at' => null]);
+        $this->assertDatabaseCount('activity_logs', 0);
+        $this->postJson('/mis-evaluaciones/1/revision', ['review_notes' => 'Intento de revision'])->assertStatus(409);
+        DB::table('evaluations')->where('id', 1)->update(['status' => 'draft']);
+        $this->post('/mis-evaluaciones/1/revision', ['review_notes' => 'Formulario anterior'])
+            ->assertRedirect('/mis-evaluaciones/1')->assertSessionHasErrors('review_notes');
     }
 
     public function test_access_and_invalid_answers_do_not_change_the_evaluation(): void

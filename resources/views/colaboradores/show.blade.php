@@ -9,6 +9,10 @@
     Regresar
 </a>
 
+@if(auth()->user()->hasAccessRole('Super Admin'))
+    <a class="btn btn-outline-primary mb-3" href="{{ route('configuracion.roles', ['user_id' => $user->id]) }}"><i class="bi bi-shield-lock"></i> Administrar acceso</a>
+@endif
+
     <div class="card shadow-sm border-0 mb-4">
 
     <div class="card-body text-center">

@@ -14,8 +14,9 @@ class AccessController extends Controller
 {
     public function index(Request $request)
     {
-        $filters = $request->validate(['search' => ['nullable', 'string', 'max:100']]);
+        $filters = $request->validate(['search' => ['nullable', 'string', 'max:100'], 'user_id' => ['nullable', 'integer', 'exists:users,id']]);
         $users = User::with('accessRoles')->orderBy('first_name')->orderBy('id');
+        if (! empty($filters['user_id'])) $users->whereKey($filters['user_id']);
         if ($search = trim($filters['search'] ?? '')) {
             $users->where(function ($query) use ($search) {
                 $query->where('first_name', 'like', '%'.$search.'%')
