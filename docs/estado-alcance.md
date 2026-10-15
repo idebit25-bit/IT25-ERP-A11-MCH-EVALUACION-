@@ -138,3 +138,7 @@ Esta etapa no requiere migración. Sigue pendiente la reorganización visual de 
 ## Presentación del detalle de planes — 14 de octubre de 2026
 
 Objetivo en columna lateral y acciones en columna principal en pantallas amplias; distribución vertical en móvil. Las acciones muestran responsable, fecha y porcentaje antes de desplegar sus formularios. Cierre administrativo e historial se consultan bajo demanda. Los formularios con errores permanecen abiertos; la paginación del historial abre y enlaza esa sección. Se conservan las reglas de acceso y seguimiento.
+
+## Guía del siguiente paso en evaluaciones — 14 de octubre de 2026
+
+El detalle de Mis evaluaciones muestra la secuencia Responder, Revisar, Validar y Publicar; explica la etapa actual y quién debe continuar. El acceso directo desplaza al formulario correspondiente únicamente cuando el usuario tiene ese rol en la operación. También informa de plantilla incompleta, cuentas inactivas, registros completados sin respuestas y cancelaciones. La vista publicada enlaza al resultado sin exponerlo antes de tiempo. Se conservan permisos, formularios y validaciones; no requiere migración.

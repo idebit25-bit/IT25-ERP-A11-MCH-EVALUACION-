@@ -147,7 +147,7 @@
                                 </td>
                                 <td>
 
-                                    {{ $log->description }}
+                                    @include('configuracion.bitacora.description', ['log' => $log])
 
                                 </td>
 

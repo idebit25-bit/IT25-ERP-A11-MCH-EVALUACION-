@@ -100,3 +100,12 @@
 
     padding: 8px 10px;
 }
+/* Mantiene visible el destino de los accesos al siguiente paso bajo la barra superior. */
+#evaluation-response,
+#evaluation-review,
+#evaluation-validate,
+#evaluation-publish,
+#evaluation-results,
+#evaluation-reopen {
+    scroll-margin-top: 110px;
+}

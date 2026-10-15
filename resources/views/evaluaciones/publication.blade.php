@@ -21,7 +21,7 @@
             <div class="alert alert-warning mt-3">Esta evaluación figura como completada, pero no tiene respuestas guardadas. No se puede confirmar la revisión. Un Super Admin debe reabrirla con un motivo para que el colaborador pueda responderla.</div>
         @endif
         @if(auth()->id() == $evaluation->evaluator_id && !$evaluation->reviewed_at && $evaluation->answers->isNotEmpty())
-            <form action="{{ route('mis-evaluaciones.review', $evaluation->id) }}" method="POST" onsubmit="return confirm('¿Confirmar la revisión y enviarla a validación?');">
+            <form id="evaluation-review" action="{{ route('mis-evaluaciones.review', $evaluation->id) }}" method="POST" onsubmit="return confirm('¿Confirmar la revisión y enviarla a validación?');">
                 @csrf
                 <label for="review-notes" class="form-label">Observaciones de la revisión</label>
                 <textarea id="review-notes" name="review_notes" class="form-control mb-2" required maxlength="2000" rows="4" aria-describedby="review-help">{{ old('review_notes') }}</textarea>
@@ -32,12 +32,12 @@
         @endif
         @if(auth()->user()->hasModulePermission('evaluaciones.gestionar'))
             @if($evaluation->reviewed_at && !$evaluation->validated_at)
-                <form action="{{ route('mis-evaluaciones.validate', $evaluation->id) }}" method="POST" onsubmit="return confirm('¿Validar las respuestas y observaciones revisadas?');">
+                <form id="evaluation-validate" action="{{ route('mis-evaluaciones.validate', $evaluation->id) }}" method="POST" onsubmit="return confirm('¿Validar las respuestas y observaciones revisadas?');">
                     @csrf
                     <button class="btn btn-primary" type="submit">Validar resultado</button>
                 </form>
             @elseif($evaluation->validated_at && !$evaluation->published_at)
-                <form action="{{ route('mis-evaluaciones.publish', $evaluation->id) }}" method="POST" onsubmit="return confirm('¿Publicar el resultado? El colaborador podrá consultar su calificación y las observaciones.');">
+                <form id="evaluation-publish" action="{{ route('mis-evaluaciones.publish', $evaluation->id) }}" method="POST" onsubmit="return confirm('¿Publicar el resultado? El colaborador podrá consultar su calificación y las observaciones.');">
                     @csrf
                     <button class="btn btn-success" type="submit">Publicar resultado</button>
                 </form>

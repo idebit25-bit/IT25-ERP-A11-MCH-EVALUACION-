@@ -6,6 +6,7 @@
         <h1>Evaluación #{{ $evaluation->id }}</h1>
         <p>{{ $evaluation->evaluationType?->name }} · {{ $evaluation->publication_label }}</p>
     </div>
+    @include('evaluaciones.next-step')
     <div class="card mb-4"><div class="card-body">
         <p><strong>Colaborador:</strong> {{ $evaluation->user?->full_name }}</p>
         <p><strong>Evaluador:</strong> {{ $evaluation->evaluator?->full_name }}</p>
@@ -14,7 +15,7 @@
 
     @if($canRespond && $ready)
         <div class="alert alert-info">Responde las preguntas y revisa tus selecciones antes de enviar. Las preguntas con * son obligatorias. Después del envío, necesitarás una reapertura para corregirlas.</div>
-        <form method="POST" action="{{ route('mis-evaluaciones.submit', $evaluation->id) }}" onsubmit="return confirm('¿Confirmas que deseas enviar tus respuestas? Después no podrás modificarlas sin una reapertura.');">
+        <form id="evaluation-response" method="POST" action="{{ route('mis-evaluaciones.submit', $evaluation->id) }}" onsubmit="return confirm('¿Confirmas que deseas enviar tus respuestas? Después no podrás modificarlas sin una reapertura.');">
             @csrf
             @foreach($questions as $question)
                 @php
@@ -40,9 +41,8 @@
     @elseif($canRespond)
         <div class="alert alert-warning">La plantilla aún no está lista para responder. Contacta al evaluador para que revise las preguntas y sus opciones.</div>
     @else
-        <div class="alert alert-info">{{ $evaluation->status === 'completed' ? 'Las respuestas fueron enviadas. La evaluación está cerrada para cambios.' : ($evaluation->status === 'cancelled' ? 'Esta evaluación está cancelada.' : 'El colaborador evaluado es quien debe responder. Puedes consultar aquí su estado y revisar sus respuestas cuando las envíe.') }}</div>
         @if($canSeeResults && $evaluation->status === 'completed')
-            <div class="card"><div class="card-body">
+            <div class="card" id="evaluation-results"><div class="card-body">
                 <h2 class="h5">Respuestas del colaborador</h2>
                 @foreach($evaluation->answers as $answer)
                     <p><strong>{{ collect($evaluation->comparison_snapshot['questions'] ?? [])->firstWhere('id', $answer->question_id)['text'] ?? $answer->question?->question ?? 'Pregunta registrada' }}</strong><br>{{ $answer->answer }}</p>
@@ -61,7 +61,7 @@
     <a class="btn btn-outline-secondary mt-4" href="{{ route('planes.index', ['evaluation_id' => $evaluation->id]) }}">Consultar planes de esta evaluación</a>
 
     @if(auth()->user()->hasAccessRole('Super Admin') && $evaluation->status === 'completed')
-        <form class="card p-3 mt-4" method="POST" action="{{ route('mis-evaluaciones.reopen', $evaluation->id) }}" onsubmit="return confirm('¿Reabrir esta evaluación para que el colaborador corrija sus respuestas?');">
+        <form id="evaluation-reopen" class="card p-3 mt-4" method="POST" action="{{ route('mis-evaluaciones.reopen', $evaluation->id) }}" onsubmit="return confirm('¿Reabrir esta evaluación para que el colaborador corrija sus respuestas?');">
             @csrf
             <h2 class="h5">Reabrir evaluación</h2>
             <p>Se conservará en la bitácora una copia de las respuestas y la calificación anteriores, junto con el responsable y el motivo.</p>

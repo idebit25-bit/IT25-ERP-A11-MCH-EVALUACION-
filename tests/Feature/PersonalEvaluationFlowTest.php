@@ -132,6 +132,24 @@ SQL);
             ->assertRedirect('/mis-evaluaciones/1')->assertSessionHasErrors('review_notes');
     }
 
+    public function test_next_step_matches_stage_and_viewer_permissions(): void
+    {
+        $this->actingAs($this->employee)->get('/mis-evaluaciones/1')->assertOk()->assertSee('href="#evaluation-response"', false);
+        $this->actingAs($this->evaluator)->get('/mis-evaluaciones/1')->assertOk()->assertDontSee('href="#evaluation-response"', false);
+        $this->actingAs($this->employee)->post('/mis-evaluaciones/1/respuestas', ['answers' => [1 => 1]])->assertRedirect();
+        $this->get('/mis-evaluaciones/1')->assertSee('Pendiente de revisión')->assertDontSee('href="#evaluation-review"', false);
+        $this->actingAs($this->evaluator)->get('/mis-evaluaciones/1')->assertSee('href="#evaluation-review"', false);
+        $this->post('/mis-evaluaciones/1/revision', ['review_notes' => 'Revisada correctamente'])->assertRedirect();
+        $this->actingAs($this->super)->get('/mis-evaluaciones/1')->assertSee('href="#evaluation-validate"', false);
+        $this->post('/mis-evaluaciones/1/validar')->assertRedirect();
+        $this->get('/mis-evaluaciones/1')->assertSee('href="#evaluation-publish"', false);
+        $this->actingAs($this->employee)->get('/mis-evaluaciones/1')->assertDontSee('href="#evaluation-publish"', false)->assertDontSee('href="#evaluation-results"', false);
+        $this->actingAs($this->super)->post('/mis-evaluaciones/1/publicar')->assertRedirect();
+        $this->actingAs($this->employee)->get('/mis-evaluaciones/1')->assertSee('href="#evaluation-results"', false);
+        DB::table('evaluations')->where('id', 1)->update(['status' => 'cancelled']);
+        $this->get('/mis-evaluaciones/1')->assertSee('Evaluación cancelada')->assertDontSee('href="#evaluation-results"', false);
+    }
+
     public function test_access_and_invalid_answers_do_not_change_the_evaluation(): void
     {
         $this->actingAs($this->evaluator)->post('/mis-evaluaciones/1/respuestas', ['answers' => [1 => 1]])->assertForbidden();

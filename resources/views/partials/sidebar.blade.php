@@ -2,7 +2,7 @@
     <div class="sidebar-logo">
         <h2>I-DEB</h2>
         <p>Capital Humano</p>
-        <small>v1.0</small>
+        <small>v2.0</small>
     </div>
 
     @if(auth()->user()->canManageOperations())
